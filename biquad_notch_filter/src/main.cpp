@@ -5,7 +5,7 @@
 
 int main()
 {
-    BiquadNotchFilter biquadNotchFilter(120.0, 40.0, 30.0);
+    BiquadNotchFilter biquadNotchFilter{120.0, 40.0, 30.0};
     biquadNotchFilter.printDampingRatios();
 
     return 0;
