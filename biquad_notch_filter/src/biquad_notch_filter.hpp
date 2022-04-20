@@ -1,5 +1,5 @@
 // Refer to "How to calculate the damping ratios of a biquadratic notch
-// filter," located at src/damping_ratios.pdf
+// filter," located at ../doc/damping_ratios.pdf
 
 #include <iostream>  // TODO: For testing only. Delete this line.
 
