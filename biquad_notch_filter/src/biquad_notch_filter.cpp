@@ -1,5 +1,6 @@
 #include "biquad_notch_filter.hpp"
 
+#include <string>
 #include <cmath>
 #include <iostream>
 
@@ -10,23 +11,41 @@ BiquadNotchFilter::BiquadNotchFilter(const double kCenterFreq,
     setDampingRatios(kCenterFreq, kBandwidth, kNotchDepth);
 }
 
-void BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
+bool BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
                                          const double kBandwidth,
                                          const double kNotchDepth)
 {
     try
     {
         // Check for invalid parameters
-        if (kCenterFreq <= 0.0)
-            throw "wc must be > 0 rad/s";
-        if (kBandwidth <= 0.0)
-            throw "wb must be > 0 rad/s";
-        if (kCenterFreq - kBandwidth / 2 <= 0.0)
-            throw "wc - wb/2 must be > 0 rad/s";
-        if (kNotchDepth <= -20 * std::log10(1 / std::sqrt(2.0)))
-            throw "d must be > -20*log10(1/sqrt(2)) dB";
+        std::string exceptionMsg;
+        bool exceptionOccurred {false};
 
-        // All parameters are valid. Set damping ratios.
+        if (kCenterFreq <= 0.0)
+        {
+            exceptionMsg = "wc must be > 0 rad/s";
+            exceptionOccurred = true;
+        }
+        else if (kBandwidth <= 0.0)
+        {
+            exceptionMsg = "wb must be > 0 rad/s";
+            exceptionOccurred = true;
+        }
+        else if (kCenterFreq - kBandwidth / 2 <= 0.0)
+        {
+            exceptionMsg = "wc - wb/2 must be > 0 rad/s";
+            exceptionOccurred = true;
+        }
+        else if (kNotchDepth <= -20 * std::log10(1 / std::sqrt(2.0)))
+        {
+            exceptionMsg = "d must be > -20*log10(1/sqrt(2)) dB";
+            exceptionOccurred = true;
+        }
+
+        if (exceptionOccurred)
+            throw (exceptionMsg += ". Damping ratios not properly set.");
+
+        // All parameters are valid. Properly set damping ratios.
         const double kConst {(kBandwidth + std::sqrt(kBandwidth * kBandwidth
             + 4 * kCenterFreq * kCenterFreq)) / (2 * kCenterFreq)};
         const double kConstSq {kConst * kConst};
@@ -35,11 +54,16 @@ void BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
         dampingRatios_.numerator = std::pow(10.0, -kNotchDepth / 20)
             * dampingRatios_.denominator;
 
-        return;
+        return true;
     }
-    catch(const char* const kExceptMsg)
+    catch(const std::string kExceptionMsg)
     {
-        std::cerr << "ERROR: " << kExceptMsg << std::endl;
-        return;
+        std::cerr << "ERROR: " << kExceptionMsg << std::endl;
+        return false;
     }
+}
+
+BiquadDampingRatios BiquadNotchFilter::getDampingRatios() const
+{
+    return dampingRatios_;
 }
