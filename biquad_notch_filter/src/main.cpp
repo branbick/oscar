@@ -3,8 +3,8 @@
 
 #include "biquad_notch_filter.hpp"
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -12,11 +12,9 @@ int main(int argc, char* argv[])
     {
         if (argc == 4)
         {
-            const double kCenterFreq {std::stod(argv[1])};
-            const double kBandwidth {std::stod(argv[2])};
-            const double kNotchDepth {std::stod(argv[3])};
-
-            BiquadNotchFilter biquadNotchFilter{kCenterFreq, kBandwidth, kNotchDepth};
+            BiquadNotchFilter biquadNotchFilter{std::stod(argv[1]),
+                                                std::stod(argv[2]),
+                                                std::stod(argv[3])};
             biquadNotchFilter.printDampingRatios();
 
             return 0;
@@ -24,9 +22,9 @@ int main(int argc, char* argv[])
 
         throw "Enter wc (rad/s), wb (rad/s), and d (dB)";
     }
-    catch(const char* exception)
+    catch(const char* const kExceptMsg)
     {
-        std::cerr << "ERROR: " << exception << std::endl;
+        std::cerr << "ERROR: " << kExceptMsg << std::endl;
         return 1;
     }
 }
