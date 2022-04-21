@@ -23,7 +23,7 @@ void BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
             throw "wb must be > 0 rad/s";
         if (kCenterFreq - kBandwidth / 2 <= 0.0)
             throw "wc - wb/2 must be > 0 rad/s";
-        if (kNotchDepth <= -20 * std::log10(1 / sqrt(2.0)))
+        if (kNotchDepth <= -20 * std::log10(1 / std::sqrt(2.0)))
             throw "d must be > -20*log10(1/sqrt(2)) dB";
 
         // All parameters are valid. Set damping ratios.
