@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
             return 0;
         }
 
-        throw "Enter wc (rad/s), wb (rad/s), and d (dB)";
+        throw "Enter wc (rad/s), wb (rad/s), and d (dB)--in that order";
     }
     catch(const char* const kExceptMsg)
     {
