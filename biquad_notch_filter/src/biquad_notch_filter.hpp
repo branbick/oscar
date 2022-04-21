@@ -14,7 +14,8 @@ public:
                           double kBandwidth,
                           double kNotchDepth);
 
-    void printDampingRatios() const // TODO: For testing only. Delete this fxn.
+    // TODO: For testing only. Delete this fxn.
+    void printDampingRatios() const
     {
         std::cout << "zetaNum: " << dampingRatios_.numerator << std::endl;
         std::cout << "zetaDen: " << dampingRatios_.denominator << std::endl;

@@ -1,5 +1,5 @@
 // TODO: For testing only. Delete this file.
-// Build command: g++ main.cpp biquad_notch_filter.cpp -Wall -Wextra -Wpedantic -std=c++17 -o main
+// GCC options: -Wall -Wextra -Wpedantic -std=c++17
 
 #include "biquad_notch_filter.hpp"
 

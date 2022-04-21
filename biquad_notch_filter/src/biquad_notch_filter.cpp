@@ -6,7 +6,6 @@ BiquadNotchFilter::BiquadNotchFilter(const double kCenterFreq,
                                      const double kBandwidth,
                                      const double kNotchDepth)
 {
-    // TODO: Check for invalid params (e.g., kNotchDepth must be > 0.0)
     setDampingRatios(kCenterFreq, kBandwidth, kNotchDepth);
 }
 
@@ -14,6 +13,7 @@ void BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
                                          const double kBandwidth,
                                          const double kNotchDepth)
 {
+    // TODO: Check for invalid params (e.g., kNotchDepth must be > 3 dB)
     const double kConst {(kBandwidth + std::sqrt(kBandwidth * kBandwidth
         + 4 * kCenterFreq * kCenterFreq)) / (2 * kCenterFreq)};
     const double kConstSq {kConst * kConst};
