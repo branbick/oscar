@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 
         throw "Enter wc (rad/s), wb (rad/s), and d (dB)--in that order";
     }
-    catch(const char* const kExceptionMsg)
+    catch (const char* const kExceptionMsg)
     {
         std::cerr << "ERROR: " << kExceptionMsg << std::endl;
         return 1;

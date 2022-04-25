@@ -56,7 +56,7 @@ bool BiquadNotchFilter::setDampingRatios(const double kCenterFreq,
 
         return true;
     }
-    catch(const std::string kExceptionMsg)
+    catch (const std::string kExceptionMsg)
     {
         std::cerr << "ERROR: " << kExceptionMsg << std::endl;
         return false;
