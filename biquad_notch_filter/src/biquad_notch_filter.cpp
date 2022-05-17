@@ -3,7 +3,6 @@
 #include <string>
 #include <cmath>
 #include <iostream>
-#include <cstdlib>
 
 BiquadNotchFilter::BiquadNotchFilter(const double kCenterFreq,
                                      const double kBandwidth,
