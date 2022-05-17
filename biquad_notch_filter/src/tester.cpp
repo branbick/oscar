@@ -9,15 +9,28 @@ int main(int argc, char* argv[])
     {
         if (argc == 5)
         {
-            // Set (via constructor), get, and print damping ratios
+            // Construct filter
             BiquadNotchFilter biquadNotchFilter{std::stod(argv[1]),
                                                 std::stod(argv[2]),
                                                 std::stod(argv[3]),
                                                 std::stod(argv[4])};
+
+            // Get and print damping ratios
             const BiquadParams::DampingRatios kDampingRatios {
                 biquadNotchFilter.getDampingRatios()};
-            std::cout << "zetaNum: " << kDampingRatios.num << std::endl;
-            std::cout << "zetaDen: " << kDampingRatios.den << std::endl;
+            std::cout << "Damping ratios:" << std::endl;
+            std::cout << "- num: " << kDampingRatios.num << std::endl;
+            std::cout << "- den: " << kDampingRatios.den << std::endl;
+
+            // Get and print coefficients
+            const BiquadParams::Coefficients kCoefficients {
+                biquadNotchFilter.getCoefficients()};
+            std::cout << std::endl << "Coefficients:" << std::endl;
+            std::cout << "- b0: " << kCoefficients.b0 << std::endl;
+            std::cout << "- b1: " << kCoefficients.b1 << std::endl;
+            std::cout << "- b2: " << kCoefficients.b2 << std::endl;
+            std::cout << "- a1: " << kCoefficients.a1 << std::endl;
+            std::cout << "- a2: " << kCoefficients.a2 << std::endl;
 
             return 0;
         }
