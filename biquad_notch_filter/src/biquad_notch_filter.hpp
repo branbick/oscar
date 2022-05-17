@@ -21,7 +21,7 @@ struct BiquadParams
         double a2 {0.0};
     };
 
-    struct States           // Based on a direct-form-I realization
+    struct States           // Based on direct-form-I realization
     {
         double out1 {0.0};  // "Output n-minus-1 / previous output"
         double out2 {0.0};  // "Output n-minus-2 / second-to-last output"
@@ -42,7 +42,7 @@ public:
     BiquadParams::DampingRatios getDampingRatios() const;
     BiquadParams::Coefficients getCoefficients() const;
     void resetStates();
-    double filterSignal(double kIn0);
+    double filterSignal(double kInput);  // Using direct-form-I realization
 
 private:
     BiquadParams::DampingRatios dampingRatios_;
