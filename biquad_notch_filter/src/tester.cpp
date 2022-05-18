@@ -26,6 +26,16 @@ void printCoefficients(const BiquadNotchFilter& kBiquadNotchFilter)
     std::cout << "- a2: " << kCoefficients.a2 << std::endl;
 }
 
+void printStates(const BiquadNotchFilter& kBiquadNotchFilter)
+{
+    const BiquadParams::States kStates {kBiquadNotchFilter.getStates()};
+    std::cout << "States:" << std::endl;
+    std::cout << "- out1: " << kStates.out1 << std::endl;
+    std::cout << "- out2: " << kStates.out2 << std::endl;
+    std::cout << "- in1 : " << kStates.in1 << std::endl;
+    std::cout << "- in2 : " << kStates.in2 << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     try
@@ -39,6 +49,7 @@ int main(int argc, char* argv[])
 
             printDampingRatios(biquadNotchFilter);
             printCoefficients(biquadNotchFilter);
+            printStates(biquadNotchFilter);
 
             return 0;
         }
