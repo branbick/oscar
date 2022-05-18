@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
                                                 std::stod(argv[2]),
                                                 std::stod(argv[3]),
                                                 std::stod(argv[4])};
+
             printDampingRatios(biquadNotchFilter);
             printCoefficients(biquadNotchFilter);
 

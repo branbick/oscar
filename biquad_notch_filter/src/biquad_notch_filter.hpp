@@ -39,10 +39,12 @@ public:
                       double kNotchDepth,       // (+dB)
                       double kSamplingPeriod);  // (s)
 
+    double filterSignal(double kInput);  // Using direct-form-I realization
+    void resetStates();
+
     BiquadParams::DampingRatios getDampingRatios() const;
     BiquadParams::Coefficients getCoefficients() const;
-    void resetStates();
-    double filterSignal(double kInput);  // Using direct-form-I realization
+    BiquadParams::States getStates() const;
 
 private:
     BiquadParams::DampingRatios dampingRatios_;

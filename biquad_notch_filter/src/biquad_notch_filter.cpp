@@ -66,21 +66,6 @@ BiquadNotchFilter::BiquadNotchFilter(const double kCenterFreq,
     }
 }
 
-BiquadParams::DampingRatios BiquadNotchFilter::getDampingRatios() const
-{
-    return dampingRatios_;
-}
-
-BiquadParams::Coefficients BiquadNotchFilter::getCoefficients() const
-{
-    return coefficients_;
-}
-
-void BiquadNotchFilter::resetStates()
-{
-    states_ = BiquadParams::States();
-}
-
 double BiquadNotchFilter::filterSignal(const double kInput)
 {
     const double kOutput {coefficients_.b0 * kInput + coefficients_.b1
@@ -94,4 +79,24 @@ double BiquadNotchFilter::filterSignal(const double kInput)
     states_.out1 = kOutput;
 
     return kOutput;
+}
+
+void BiquadNotchFilter::resetStates()
+{
+    states_ = BiquadParams::States();
+}
+
+BiquadParams::DampingRatios BiquadNotchFilter::getDampingRatios() const
+{
+    return dampingRatios_;
+}
+
+BiquadParams::Coefficients BiquadNotchFilter::getCoefficients() const
+{
+    return coefficients_;
+}
+
+BiquadParams::States BiquadNotchFilter::getStates() const
+{
+    return states_;
 }
