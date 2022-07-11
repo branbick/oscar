@@ -29,8 +29,20 @@ std::vector<double> generateInputSignal(const double kAmplitude,
     std::vector<double> inputSignal(kNumSamplesTot);
 
     // TODO: Calculate values of inputSignal by looping thru kFreqVec,
-    // switching to kFreqVec(i + 1) once number of samples collected for
-    // kFreqVec(i) > numSamplesVec(i)
+    // switching to kFreqVec.at(i + 1) once number of samples collected for
+    // kFreqVec.at(i) == numSamplesVec.at(i)
+    int freqIndex {0};
+    int numSamples {0};  // For kFreqVec.at(freqIndex)
+    for (double& val : inputSignal)
+    {
+        val = kAmplitude * std::sin(kFreqVec.at(freqIndex));  // TODO: Complete sin arg by incorporating time
+        numSamples++;
+        if (numSamples == numSamplesVec.at(freqIndex))
+        {
+            freqIndex++;
+            numSamples = 0;
+        }
+    }
 
     return inputSignal;
 }
