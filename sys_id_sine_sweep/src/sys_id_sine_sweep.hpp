@@ -5,7 +5,8 @@
 // system. The form of the generated signal is u(t) = A*sin(w*t), where u :=
 // input signal (e.g., deg), t := time (s), A := amplitude (same as that/those
 // of u), and w := angular frequency (rad/s). Units: kMinFreq and kMaxFreq:
-// rad/s; kSamplingFreq: Hz.
+// rad/s; kSamplingFreq: Hz. (Only the range is returned. The domain can be
+// easily calculated using the sampling frequency.)
 // TODO: Reqmt: kSamplingFreq vs. kMaxFreq--Nyquist sampling theorem
 std::vector<double> generateInputSignal(double kAmplitude,
                                         double kMinFreq,

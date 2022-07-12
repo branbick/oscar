@@ -1,5 +1,5 @@
 // Build: g++ tester.cpp sys_id_sine_sweep.cpp -Wall -Wextra -Wpedantic -std=c++17 -o tester.out
-// Execute: ./tester.out (< tester.txt)
+// Execute: ./tester.out (> tester.txt)
 
 #include "sys_id_sine_sweep.hpp"
 
@@ -16,10 +16,10 @@ int main()
     // Generate and print an input signal
     const std::vector<double> kInputSignal {generateInputSignal(1.0,
                                                                 10.0,
-                                                                100.0,
-                                                                3,
+                                                                500.0,
                                                                 5,
-                                                                100)};
+                                                                3,
+                                                                500)};
     for (const double kEl : kInputSignal)
         std::cout << kEl << " ";
     std::cout << std::endl;
