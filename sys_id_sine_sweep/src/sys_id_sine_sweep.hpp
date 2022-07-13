@@ -1,13 +1,37 @@
 #include <vector>
 
 // BRIEF
-// generateInputSignal generates the signal to input into the stable, LTI
-// system. The form of the generated signal is u(t) = A*sin(w*t), where u :=
-// input signal (e.g., deg), t := time (s), A := amplitude (same as that/those
-// of u), and w := angular frequency (rad/s). Units: kMinFreq and kMaxFreq:
-// rad/s; kSamplingFreq: Hz. (Only the range is returned. The domain can be
-// easily calculated using the sampling frequency.)
-// TODO: Reqmt: kSamplingFreq vs. kMaxFreq--Nyquist sampling theorem
+// generateInputSignal generates a signal of the form u(t) = A*sin(w*t)--where
+// u := input signal [same unit(s) as that/those of A], t := time (s), A :=
+// amplitude (e.g., deg), and w := angular frequency (rad/s)--whose frequency
+// (w) increases every kCyclesPerFreq cycles. Altogether, the signal is
+// composed of kNumFreqs different frequencies that are precisely the elements
+// of the return value of logSpace(kMinFreq, kMaxFreq, kNumFreqs). Practically,
+// the generated signal is the input into the stable, LTI (linear, time-
+// invariant), SISO (single-input, single-output) system being "identified."
+// Note that only the range of the input signal is returned; its domain can be
+// easily calculated/generated using kSamplingFreq.
+//
+// PARAMETER(S)
+// kAmplitude
+//     The amplitude of the sinusoid [arbitrary unit(s)]
+// kMinFreq
+//     The minimum--and first--angular frequency of the sinusoid (rad/s)
+// kMaxFreq
+//     The maximum--and last--angular frequency of the sinusoid (rad/s)
+// kNumFreqs
+//     The number of different frequencies that compose the sinusoid
+// kCyclesPerFreq
+//     The number of cycles the sinusoid completes for each of the kNumFreqs
+//     different frequencies
+// kSamplingFreq
+//     The sampling frequency, dependent on the embedded system (Hz)
+//
+// RETURN VALUE
+// A sinusoidal signal of amplitude kAmplitude; composed of kNumFreqs different
+// frequencies ranging from kMinFreq rad/s to kMaxFreq rad/s--kCyclesPerFreq
+// cycles for each; to be input into the stable, LTI, SISO system being
+// "identified"; sampled at kSamplingFreq Hz
 std::vector<double> generateInputSignal(double kAmplitude,
                                         double kMinFreq,
                                         double kMaxFreq,
