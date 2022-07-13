@@ -22,13 +22,18 @@ std::vector<double> generateInputSignal(const double kAmplitude,
         numSamplesVec.at(i) = static_cast<int>(std::floor(kConst
             / kFreqVec.at(i)));
 
+    // - Increment last element by 1 to append terminating value of 0.0 to
+    //   inputSignal (see below)
+    numSamplesVec.back()++;
+
     const int kNumSamplesTot {std::accumulate(numSamplesVec.begin(),
         numSamplesVec.end(), 0)};
     std::vector<double> inputSignal(kNumSamplesTot);
 
     // TODO: Calculate values of inputSignal by looping thru kFreqVec,
     // switching to kFreqVec.at(i + 1) once number of samples collected for
-    // kFreqVec.at(i) == numSamplesVec.at(i)
+    // kFreqVec.at(i) == numSamplesVec.at(i). Resetting time ensures each
+    // sinusoid starts with a range value of 0.0.
     int freqIndex {0};
     double time {0.0};  // (s)
     const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
@@ -45,6 +50,9 @@ std::vector<double> generateInputSignal(const double kAmplitude,
             numSamples = 0;
         }
     }
+
+    // - Override last element: terminate range values with 0.0
+    inputSignal.back() = 0.0;
 
     return inputSignal;
 }
