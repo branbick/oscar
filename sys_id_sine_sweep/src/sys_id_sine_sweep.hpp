@@ -16,7 +16,18 @@ std::vector<double> generateInputSignal(double kAmplitude,
                                         double kSamplingFreq);
 
 // BRIEF
-// logSpace generates a logarithmically (base-10) spaced vector. kMinVal and
-// kMaxVal are specified in base-10.
-// TODO: Reqmts: kMaxVal > kMinVal > 0 and kNumVals > 2
+// logSpace generates a logarithmically (base-10) spaced vector with kNumVals
+// values between kMinVal and kMaxVal, inclusive.
+//
+// PARAMETER(S)
+// kMinVal
+//     The minimum value / first element of the generated vector
+// kMaxVal
+//     The maximum value / last element of the generated vector
+// kNumVals
+//     The number of elements the generated vector contains
+//
+// RETURN VALUE
+// A logarithmically (base-10) spaced vector with kNumVals values between
+// kMinVal and kMaxVal, inclusive
 std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);

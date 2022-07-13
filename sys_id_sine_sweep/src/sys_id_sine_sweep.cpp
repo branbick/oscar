@@ -61,18 +61,21 @@ std::vector<double> logSpace(const double kMinVal,
                              const double kMaxVal,
                              const int kNumVals)
 {
+    // TODO: Check for invalid parameters based on the following requirements:
+    // 1. kMaxVal > kMinVal > 0.0
+    // 2. kNumVals > 2
     std::vector<double> logSpacedVec(kNumVals);
 
-    // Set values of first and last elements
+    // Set the values of the first and last elements
     logSpacedVec.front() = kMinVal;
     logSpacedVec.back() = kMaxVal;
 
-    // Calculate and set value(s) of middle element(s)
-    const double kLogStepSize {(std::log10(kMaxVal) - std::log10(kMinVal))
-        / (kNumVals - 1)};
+    // Calculate and set the value(s) of the middle element(s). Note that the
+    // second argument of pow is the logarithmic (base-10) step size.
+    const double kConst {std::pow(10.0, (std::log10(kMaxVal)
+        - std::log10(kMinVal)) / (kNumVals - 1))};
     for (int i {1}; i < kNumVals - 1; i++)
-        logSpacedVec.at(i) = logSpacedVec.at(i - 1)
-            * std::pow(10.0, kLogStepSize);
+        logSpacedVec.at(i) = logSpacedVec.at(i - 1) * kConst;
 
     return logSpacedVec;
 }
