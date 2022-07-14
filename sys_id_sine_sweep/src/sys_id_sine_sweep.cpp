@@ -12,14 +12,18 @@ std::vector<double> generateInputSignal(const double kAmplitude,
                                         const int kCyclesPerFreq,
                                         const double kSamplingFreq)
 {
-    // TODO: Compare kMaxFreq and kSamplingFreq to check if the Nyquist
+    // TODO: Compare kMaxFreq and kSamplingFreq to check if the Nyquist-Shannon
     // sampling theorem is adhered to
     const std::vector<double> kFreqVec {logSpace(kMinFreq, kMaxFreq,
         kNumFreqs)};  // (rad/s)
 
-    // Calculate the number of samples for each element of kFreqVec
+    // Calculate the number of samples collected for each element of kFreqVec.
+    // Note that the rvalue in the for statement (body) is the period
+    // corresponding to kFreqVec[i] [i.e., 2 * gkPi / kFreqVec.at(i)] divided
+    // by the sampling period multiplied by the number of cycles.
     std::vector<int> numSamplesVec(kNumFreqs);
-    const double kConst {2 * gkPi * kSamplingFreq * kCyclesPerFreq};  // (Hz)
+    const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
+    const double kConst {2 * gkPi / kSamplingPeriod * kCyclesPerFreq};  // (Hz)
     for (int i {0}; i < kNumFreqs; i++)
         numSamplesVec.at(i) = static_cast<int>(std::floor(kConst
             / kFreqVec.at(i)));
@@ -28,18 +32,17 @@ std::vector<double> generateInputSignal(const double kAmplitude,
     //   to inputSignal (see below)
     numSamplesVec.back()++;
 
-    const int kNumSamplesTot {std::accumulate(numSamplesVec.begin(),
-        numSamplesVec.end(), 0)};
-    std::vector<double> inputSignal(kNumSamplesTot);
+    std::vector<double> inputSignal(std::accumulate(numSamplesVec.begin(),
+        numSamplesVec.end(), 0));
 
-    // TODO: Update comment below
-    // Calculate the values of inputSignal by looping through kFreqVec,
-    // switching to kFreqVec[i+1] once the number of samples collected for
-    // kFreqVec[i] == numSamplesVec[i]. Note that resetting time ensures each
-    // sinusoid starts with a range value of 0.0.
+    // Calculate the elemental values of inputSignal by progressing through
+    // kFreqVec, advancing to kFreqVec[i + 1] once the number of samples
+    // collected for kFreqVec[i] equals numSamplesVec[i]. Note that both time
+    // and numSamples correspond to kFreqVec[i], and resetting time to 0.0 once
+    // the aforementioned equivalence is reached ensures each "new" sinusoid
+    // starts with a range value of 0.0.
     int freqIndex {0};
     double time {0.0};  // (s)
-    const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
     int numSamples {0};
     for (double& rangeVal : inputSignal)
     {

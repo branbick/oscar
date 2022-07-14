@@ -7,10 +7,10 @@
 // (w) increases every kCyclesPerFreq cycles. Altogether, the signal is
 // composed of kNumFreqs different frequencies that are precisely the elements
 // of the return value of logSpace(kMinFreq, kMaxFreq, kNumFreqs). Practically,
-// the generated signal is the input into the stable, LTI (linear, time-
+// the generated signal is the input to the stable, LTI (linear, time-
 // invariant), SISO (single-input, single-output) system being "identified."
-// Note that only the range of the input signal is returned; its domain can be
-// easily calculated/generated using kSamplingFreq.
+// Note that only the range of the input signal is returned; its domain (i.e.,
+// time) can be easily calculated/generated using kSamplingFreq.
 //
 // PARAMETER(S)
 // kAmplitude
@@ -30,7 +30,7 @@
 // RETURN VALUE
 // A sinusoidal signal of amplitude kAmplitude; composed of kNumFreqs different
 // frequencies ranging from kMinFreq rad/s to kMaxFreq rad/s--kCyclesPerFreq
-// cycles for each; to be input into the stable, LTI, SISO system being
+// cycles for each; to input into the stable, LTI, SISO system being
 // "identified"; sampled at kSamplingFreq Hz
 std::vector<double> generateInputSignal(double kAmplitude,
                                         double kMinFreq,
