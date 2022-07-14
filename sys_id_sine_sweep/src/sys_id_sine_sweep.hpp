@@ -56,13 +56,18 @@ std::vector<double> generateInputSignal(double kAmplitude,
 // kMinVal and kMaxVal, inclusive
 std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
 
-// TODO
 // BRIEF
-//
+// trapezoidalRule calculates the integral of kVals over a domain of points
+// that are uniformly spaced kStepSize unit(s) apart, using the composite
+// trapezoidal rule.
 //
 // PARAMETER(S)
-//
+// kVals
+//     The values to integrate
+// kStepSize
+//     The step size / spacing between adjacent points in the domain
 //
 // RETURN VALUE
-//
+// The integral of kVals over a domain with uniform spacing established by
+// kStepSize, calculated using the composite trapezoidal rule
 double trapezoidalRule(const std::vector<double>& kVals, double kStepSize);
