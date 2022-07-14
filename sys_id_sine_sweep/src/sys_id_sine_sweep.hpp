@@ -55,3 +55,14 @@ std::vector<double> generateInputSignal(double kAmplitude,
 // A logarithmically (base-10) spaced vector with kNumVals values between
 // kMinVal and kMaxVal, inclusive
 std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
+
+// TODO
+// BRIEF
+//
+//
+// PARAMETER(S)
+//
+//
+// RETURN VALUE
+//
+double trapezoidalRule(const std::vector<double>& kVals, double kStepSize);
