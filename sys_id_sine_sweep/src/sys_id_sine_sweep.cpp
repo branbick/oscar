@@ -89,11 +89,11 @@ std::vector<double> logSpace(const double kMinVal,
 double trapezoidalRule(const std::vector<double>& kVals,
                        const double kStepSize)
 {
-    double integral {0.0};
+    double integral {kStepSize / 2 * kVals.front()};
     const int kNumVals {static_cast<int>(kVals.size())};
-    const double kConst {kStepSize / 2};
-    for (int i {0}; i < kNumVals - 1; i++)
-        integral +=  kConst * (kVals.at(i) + kVals.at(i + 1));
+    for (int i {1}; i < kNumVals - 1; i++)
+        integral += kStepSize * kVals.at(i);
+    integral += kStepSize / 2 * kVals.back();
 
     return integral;
 }
