@@ -2,60 +2,80 @@
 
 // BRIEF
 // logSpace generates a logarithmically (base-10) spaced vector with kNumVals
-// values between kMinVal and kMaxVal, inclusive.
+// elements between kMinVal and kMaxVal, inclusive.
 //
 // PARAMETER(S)
 // kMinVal
-//     The minimum value / first element of the generated vector
+//     The minimum value / first element of the generated vector [arbitrary
+//     unit(s)]
 // kMaxVal
-//     The maximum value / last element of the generated vector
+//     The maximum value / last element of the generated vector [same unit(s)
+//     as that/those of kMinVal]
 // kNumVals
 //     The number of elements the generated vector contains
 //
 // RETURN VALUE
-// A logarithmically (base-10) spaced vector with kNumVals values between
-// kMinVal and kMaxVal, inclusive
+// A logarithmically (base-10) spaced vector
 std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
 
-// TODO: Complete function description
-// Calculate the number of samples collected for each element of kAngFreqs
+// BRIEF
+// calcSamplesPerFreq calculates the number of samples to collect for each of
+// the kAngFreqs.size() different frequencies that compose kAngFreqs--which is
+// the return value of logSpace(<minimum frequency>, <maximum frequency>,
+// <number of frequencies>)--based on the latter vector, kCyclesPerFreq, and
+// kSamplingFreq.
+//
+// PARAMETER(S)
+// kAngFreqs
+//     The vector of angular frequencies returned by logSpace(
+//     <minimum frequency>, <maximum frequency>, <number of frequencies>)
+//     (rad/s)
+// kCyclesPerFreq
+//     The number of cycles the input signal later generated using the return
+//     value of this function--among other arguments (see generateInputSignal)
+//     --completes for each of the kAngFreqs.size() different frequencies that
+//     compose kAngFreqs; constant across kAngFreq
+// kSamplingFreq
+//     The sampling frequency, dependent on the embedded system (Hz)
+//
+// RETURN VALUE
+// The number of samples to collect for each element of kAngFreqs
 std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
                                     int kCyclesPerFreq,
                                     double kSamplingFreq);
 
-// TODO: Update function description
 // BRIEF
 // generateInputSignal generates a signal of the form u(t) = A*sin(w*t)--where
 // u := input signal [same unit(s) as that/those of A], t := time (s), A :=
 // amplitude (e.g., deg), and w := angular frequency (rad/s)--whose frequency
 // (w) increases every kCyclesPerFreq cycles. Altogether, the signal is
-// composed of kNumFreqs different frequencies that are precisely the elements
-// of the return value of logSpace(kMinFreq, kMaxFreq, kNumFreqs). Practically,
-// the generated signal is the input to the stable, LTI (linear, time-
-// invariant), SISO (single-input, single-output) system being "identified."
-// Note that only the range of the input signal is returned; its domain (i.e.,
-// time) can be easily calculated/generated using kSamplingFreq.
+// composed of kAngFreqs.size() different frequencies that are the elements
+// of the return value of logSpace(<minimum frequency>, <maximum frequency>,
+// <number of frequencies>). Practically, the generated signal serves as the
+// input to the stable, LTI (linear, time-invariant), SISO (single-input,
+// single-output) system being "identified." Note that only the range of the
+// input signal is returned; its domain (i.e., time) can be easily calculated/
+// generated using kSamplingPeriod.
 //
 // PARAMETER(S)
 // kAmplitude
 //     The amplitude of the sinusoid [arbitrary unit(s)]
-// kMinFreq
-//     The minimum--and first--angular frequency of the sinusoid (rad/s)
-// kMaxFreq
-//     The maximum--and last--angular frequency of the sinusoid (rad/s)
-// kNumFreqs
-//     The number of different frequencies that compose the sinusoid
-// kCyclesPerFreq
-//     The number of cycles the sinusoid completes for each of the kNumFreqs
-//     different frequencies
-// kSamplingFreq
-//     The sampling frequency, dependent on the embedded system (Hz)
+// kAngFreqs
+//     The vector of angular frequencies returned by logSpace(
+//     <minimum frequency>, <maximum frequency>, <number of frequencies>); the
+//     same one used as an argument of calcSamplesPerFreq (rad/s)
+// kSamplesPerFreq
+//     The number of samples to collect for each of the kAngFreqs.size()
+//     different frequencies that compose kAngFreqs; the return value of
+//     calcSamplesPerFreq(kAngFreqs, <number of cycles per frequency>,
+//     <sampling frequency>)
+// kSamplingPeriod
+//     The sampling period, dependent on the embedded system; the reciprocal of
+//     kSamplingFreq--an argument of calcSamplesPerFreq (s)
 //
 // RETURN VALUE
-// A sinusoidal signal of amplitude kAmplitude; composed of kNumFreqs different
-// frequencies ranging from kMinFreq rad/s to kMaxFreq rad/s--kCyclesPerFreq
-// cycles for each; to input into the stable, LTI, SISO system being
-// "identified"; sampled at kSamplingFreq Hz
+// A sinusoidal signal sequentially composed of kAngFreqs.size() different
+// frequencies, to input into the stable, LTI, SISO system being "identified"
 std::vector<double> generateInputSignal(
     double kAmplitude,
     const std::vector<double>& kAngFreqs,
@@ -74,6 +94,5 @@ std::vector<double> generateInputSignal(
 //     The step size / spacing between adjacent points in the domain
 //
 // RETURN VALUE
-// The integral of kVals over a domain with uniform spacing established by
-// kStepSize, calculated using the composite trapezoidal rule
+// The integral of kVals over a domain of uniformly spaced points
 double trapezoidalRule(const std::vector<double>& kVals, double kStepSize);
