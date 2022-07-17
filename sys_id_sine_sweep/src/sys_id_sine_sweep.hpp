@@ -15,7 +15,7 @@
 //     The number of elements the generated vector contains
 //
 // RETURN VALUE
-// A logarithmically (base-10) spaced vector
+// A logarithmically spaced vector
 std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
 
 // BRIEF
@@ -34,7 +34,7 @@ std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
 //     The number of cycles the input signal later generated using the return
 //     value of this function--among other arguments (see generateInputSignal)
 //     --completes for each of the kAngFreqs.size() different frequencies that
-//     compose kAngFreqs; constant across kAngFreq
+//     compose kAngFreqs; constant across kAngFreqs
 // kSamplingFreq
 //     The sampling frequency, dependent on the embedded system (Hz)
 //
@@ -48,14 +48,15 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
 // generateInputSignal generates a signal of the form u(t) = A*sin(w*t)--where
 // u := input signal [same unit(s) as that/those of A], t := time (s), A :=
 // amplitude (e.g., deg), and w := angular frequency (rad/s)--whose frequency
-// (w) increases every kCyclesPerFreq cycles. Altogether, the signal is
-// composed of kAngFreqs.size() different frequencies that are the elements
-// of the return value of logSpace(<minimum frequency>, <maximum frequency>,
-// <number of frequencies>). Practically, the generated signal serves as the
-// input to the stable, LTI (linear, time-invariant), SISO (single-input,
-// single-output) system being "identified." Note that only the range of the
-// input signal is returned; its domain (i.e., time) can be easily calculated/
-// generated using kSamplingPeriod.
+// (w) increases every kCyclesPerFreq (an argument of calcSamplesPerFreq)
+// cycles. Altogether, the signal is composed of kAngFreqs.size() different
+// frequencies that are the elements of the return value of logSpace(
+// <minimum frequency>, <maximum frequency>, <number of frequencies>).
+// Practically, the generated signal serves as the input to the stable, LTI
+// (linear, time-invariant), SISO (single-input, single-output) system being
+// "identified." Note that only the range of the input signal is returned; its
+// domain (i.e., time) can be easily calculated/generated using
+// kSamplingPeriod.
 //
 // PARAMETER(S)
 // kAmplitude
