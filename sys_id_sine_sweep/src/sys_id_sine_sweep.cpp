@@ -99,7 +99,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
                              const double kAmplitude,
                              const std::vector<double>& kAngFreqs,
                              const std::vector<int>& kSamplesPerFreq,
-                             const double kSamplingFreq,
+                             const double kSamplingPeriod,
                              const int kCyclesToIgnorePerFreq)
 {
     // TODO: Clean up comments
@@ -108,17 +108,16 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
     const int kNumFreqs {static_cast<int>(kAngFreqs.size())};
     std::vector<int> samplesToIgnorePerFreq(kNumFreqs);
     const double kConst {
-        2 * gkPi * kSamplingFreq * kCyclesToIgnorePerFreq};  // (rad/s)
+        2 * gkPi / kSamplingPeriod * kCyclesToIgnorePerFreq};  // (rad/s)
     for (int i {0}; i < kNumFreqs; i++)
         samplesToIgnorePerFreq.at(i) = static_cast<int>(std::floor(kConst
             / kAngFreqs.at(i)));
     // TODO: Ensure that samplesToIgnorePerFreq.at(i) < kSamplesPerFreq.at(i)
 
     int dynamicSampleSize {0};
-    const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
     std::vector<double> magnitude(kNumFreqs);  // (dB)
     std::vector<double> phase(kNumFreqs);  // (deg)
-    const double kRadToDeg {180 / gkPi};  // (deg/rad)
+    constexpr double kRadToDeg {180 / gkPi};  // (deg/rad)
     for (int i {0}; i < kNumFreqs; i++)
     {
         const int kNumSamples {kSamplesPerFreq.at(i)};
@@ -153,8 +152,8 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
             quadratureIntegrand, kSamplingPeriod)};
 
         // Calculate magnitude and phase
-        magnitude.at(i) = std::sqrt(kInPhaseTerm * kInPhaseTerm
-            + kQuadratureTerm * kQuadratureTerm) / kAmplitude;
+        magnitude.at(i) = 20 * std::log10(std::sqrt(kInPhaseTerm * kInPhaseTerm
+            + kQuadratureTerm * kQuadratureTerm) / kAmplitude);
         phase.at(i) = kRadToDeg * std::atan2(kQuadratureTerm,
             kInPhaseTerm);
     }
