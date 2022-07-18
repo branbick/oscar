@@ -20,9 +20,10 @@ std::vector<double> logSpace(const double kMinVal,
 
     // Calculate and set the value(s) of the middle element(s). Note that the
     // second argument of pow is the logarithmic step size.
+    const int kNumValsMinus1 {kNumVals - 1};
     const double kConst {std::pow(10.0, (std::log10(kMaxVal)
-        - std::log10(kMinVal)) / (kNumVals - 1))};
-    for (int i {1}; i < kNumVals - 1; i++)
+        - std::log10(kMinVal)) / kNumValsMinus1)};
+    for (int i {1}; i < kNumValsMinus1; i++)
         logSpacedVec.at(i) = logSpacedVec.at(i - 1) * kConst;
 
     return logSpacedVec;
@@ -33,7 +34,8 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
                                     const double kSamplingFreq)
 {
     // TODO: Compare kAngFreqs.back() and kSamplingFreq to check if the
-    // Nyquist-Shannon sampling theorem is adhered to
+    // Nyquist-Shannon sampling theorem is adhered to. Also, check
+    // kCyclesPerFreq: it must be > 0.
 
     // In words, the number of samples for kAngFreqs.at(i) equals the period
     // corresponding to kAngFreqs.at(i) [2 * gkPi / kAngFreqs.at(i)] divided by
@@ -93,14 +95,83 @@ std::vector<double> generateInputSignal(
     return inputSignal;
 }
 
+FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
+                             const double kAmplitude,
+                             const std::vector<double>& kAngFreqs,
+                             const std::vector<int>& kSamplesPerFreq,
+                             const double kSamplingFreq,
+                             const int kCyclesToIgnorePerFreq)
+{
+    // TODO: Clean up comments
+
+    // Calculate number of samples to ignore
+    const int kNumFreqs {static_cast<int>(kAngFreqs.size())};
+    std::vector<int> samplesToIgnorePerFreq(kNumFreqs);
+    const double kConst {
+        2 * gkPi * kSamplingFreq * kCyclesToIgnorePerFreq};  // (rad/s)
+    for (int i {0}; i < kNumFreqs; i++)
+        samplesToIgnorePerFreq.at(i) = static_cast<int>(std::floor(kConst
+            / kAngFreqs.at(i)));
+    // TODO: Ensure that samplesToIgnorePerFreq.at(i) < kSamplesPerFreq.at(i)
+
+    int dynamicSampleSize {0};
+    const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
+    std::vector<double> magnitude(kNumFreqs);  // (dB)
+    std::vector<double> phase(kNumFreqs);  // (deg)
+    const double kRadToDeg {180 / gkPi};  // (deg/rad)
+    for (int i {0}; i < kNumFreqs; i++)
+    {
+        const int kNumSamples {kSamplesPerFreq.at(i)};
+        dynamicSampleSize += kNumSamples;
+        const int kStartSampleIndex = dynamicSampleSize - kNumSamples
+            + samplesToIgnorePerFreq.at(i);
+        const double kAngFreq {kAngFreqs.at(i)};  // (rad/s)
+        const int kIntegrandLength {dynamicSampleSize - kStartSampleIndex};
+        std::vector<double> inPhaseIntegrand(kIntegrandLength);
+        std::vector<double> quadratureIntegrand(kIntegrandLength);
+        for (int j {kStartSampleIndex}; j < dynamicSampleSize; j++)
+        {
+            const int kIntegrandIndex {j - kStartSampleIndex};
+            const double kOutputSignalRangeVal {kOutputSignal.at(j)};
+            // j * kSamplingPeriod is the time (s)
+            const double kTrigFxnArg {
+                kAngFreq * j * kSamplingPeriod};  // (rad)
+
+            // Calculate integrands of in-phase and quadrature Fourier-series
+            // terms--b1 and a1, respectively
+            inPhaseIntegrand.at(kIntegrandIndex) = kOutputSignalRangeVal
+                * std::sin(kTrigFxnArg);
+            quadratureIntegrand.at(kIntegrandIndex) = kOutputSignalRangeVal
+                * std::cos(kTrigFxnArg);
+        }
+
+        // Calculate b1 and a1
+        const double kFactor {2 / kSamplingPeriod};  // (s)
+        const double kInPhaseTerm {kFactor * trapezoidalRule(inPhaseIntegrand,
+            kSamplingPeriod)};
+        const double kQuadratureTerm {kFactor * trapezoidalRule(
+            quadratureIntegrand, kSamplingPeriod)};
+
+        // Calculate magnitude and phase
+        magnitude.at(i) = std::sqrt(kInPhaseTerm * kInPhaseTerm
+            + kQuadratureTerm * kQuadratureTerm) / kAmplitude;
+        phase.at(i) = kRadToDeg * std::atan2(kQuadratureTerm,
+            kInPhaseTerm);
+    }
+    const FreqResponse kFreqResponse {magnitude, phase};
+
+    return kFreqResponse;
+}
+
 double trapezoidalRule(const std::vector<double>& kVals,
                        const double kStepSize)
 {
-    double integral {kStepSize / 2 * kVals.front()};
-    const int kNumVals {static_cast<int>(kVals.size())};
-    for (int i {1}; i < kNumVals - 1; i++)
+    const double kHalfStep {kStepSize / 2};
+    double integral {kHalfStep * kVals.front()};
+    const int kNumValsMinus1 {static_cast<int>(kVals.size()) - 1};
+    for (int i {1}; i < kNumValsMinus1; i++)
         integral += kStepSize * kVals.at(i);
-    integral += kStepSize / 2 * kVals.back();
+    integral += kHalfStep * kVals.back();
 
     return integral;
 }

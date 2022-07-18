@@ -1,5 +1,11 @@
 #include <vector>
 
+struct FreqResponse
+{
+    std::vector<double> magnitude;  // (dB)
+    std::vector<double> phase;      // (deg)
+};
+
 // BRIEF
 // logSpace generates a logarithmically (base-10) spaced vector with kNumVals
 // elements between kMinVal and kMaxVal, inclusive.
@@ -82,6 +88,17 @@ std::vector<double> generateInputSignal(
     const std::vector<double>& kAngFreqs,
     const std::vector<int>& kSamplesPerFreq,
     double kSamplingPeriod);
+
+// TODO: Add function description
+// kAmplitude, kAngFreqs, kSamplesPerFreq, and kSamplingFreq need to be same as
+// those above. kCyclesToIgnorePerFreq corresponds to transient response that
+// needs to be ignored to properly calculate frequency response.
+FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
+                             double kAmplitude,
+                             const std::vector<double>& kAngFreqs,
+                             const std::vector<int>& kSamplesPerFreq,
+                             double kSamplingFreq,
+                             int kCyclesToIgnorePerFreq);
 
 // BRIEF
 // trapezoidalRule calculates the integral of kVals over a domain of points
