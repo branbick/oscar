@@ -11,7 +11,7 @@ int main()
     // Generate and optionally print a logarithmically spaced angular frequency
     // vector
     const std::vector<double> kAngFreqs {
-        logSpace(10.0, 1000.0, 5)};  // (rad/s)
+        logSpace(10.0, 1000.0, 10)};  // (rad/s)
 
 #ifdef PRINT_TEST1
     std::cout << "logSpace test:" << std::endl;
@@ -22,9 +22,9 @@ int main()
 
     // Calculate and optionally print the number of samples for each element of
     // kAngFreqs
-    const double kSamplingFreq {1000.0};  // (s)
+    constexpr double kSamplingFreq {1000.0};  // (s)
     const std::vector<int> kSamplesPerFreq {
-        calcSamplesPerFreq(kAngFreqs, 10, kSamplingFreq)};
+        calcSamplesPerFreq(kAngFreqs, 30, kSamplingFreq)};
 
 #ifdef PRINT_TEST2
     std::cout << "calcSamplesPerFreq test:" << std::endl;
@@ -33,35 +33,37 @@ int main()
     std::cout << std::endl;
 #endif
 
-    // Generate and optionally print (to a .csv file) an input signal
-    const double kAmplitude {1.0};
-    const double kSamplingPeriod {1 / kSamplingFreq};  // (s)
+    // Generate and optionally print (to a .csv file) a corresponding input
+    // signal
+    constexpr double kAmplitude {1.0};
+    constexpr double kSamplingPeriod {1 / kSamplingFreq};  // (s)
     const std::vector<double> kInputSignal {generateInputSignal(
         kAmplitude, kAngFreqs, kSamplesPerFreq, kSamplingPeriod)};
 
 #ifdef PRINT_TEST3
-    std::ofstream input {"data/input.csv"};
-    const int kSizeMinus1 {static_cast<int>(kInputSignal.size()) - 1};
-    for (int i {0}; i < kSizeMinus1; i++)
-        input << kInputSignal.at(i) << ", ";
-    input << kInputSignal.back();
-    input.close();
+    std::ofstream inputSignalData {"data/input.csv"};
+    const int kInputSignalSizeMinus1 {static_cast<int>(kInputSignal.size())
+        - 1};
+    for (int i {0}; i < kInputSignalSizeMinus1; i++)
+        inputSignalData << kInputSignal.at(i) << ", ";
+    inputSignalData << kInputSignal.back();
+    inputSignalData.close();
 #endif
 
-    // TODO: Complete this test
-    // Calculate and optionally print the frequency response: magnitude and
-    // phase
+    // Calculate and optionally print the corresponding frequency response:
+    // magnitude and phase
     //
     // MATLAB code:
     // input = csvread('input.csv');
-    // fs = 1000; Ts = 1 / fs;  % (Hz) and (s), respectively
-    // t = [0 : length(input) - 1] * Ts;  % (s)
-    // wn = 100; zeta = 0.5;  % (rad/s) and (--), respectively
+    // fs = 1000;  % (Hz)
+    // t = [0 : length(input) - 1] / fs;  % (s)
+    // wn = 100;  % (rad/s)
+    // zeta = 0.5;
     // s = tf('s'); G = wn^2 / (s^2 + 2*zeta*wn*s + wn^2);
     // output = lsim(G, input, t)';
-    // fileID = fopen('output.dat', 'a');
-    // for i = 1:length(t), fprintf(fileID, '%.6f ', output(i)); end, fclose(fileID);
-    // plot(t, input)
+    // fID = fopen('output.dat', 'a');
+    // for i = 1:length(t), fprintf(fID, '%.6f ', output(i)); end, fclose(fID);
+    // plot(t, input), xlabel('Time (s)'), ylabel('Signal')
     // hold on; plot(t, output); legend('in', 'out');
     // figure; bode(G)
     std::ifstream outputSignalData {"data/output.dat"};
@@ -77,7 +79,7 @@ int main()
     }
     outputSignalData.close();
     const FreqResponse kFreqResponse {calcMagAndPhase(outputSignal, kAmplitude,
-        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, 5)};
+        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, 15)};
 
 #ifdef PRINT_TEST4
     std::cout << "calcMagAndPhase test:" << std::endl;
