@@ -115,62 +115,54 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
     // TODO: Ensure that samplesToIgnorePerFreq.at(i) < kSamplesPerFreq.at(i)
 
     int dynamicSampleSize {0};
-    std::vector<double> magnitude(kNumFreqs);  // (dB)
-    std::vector<double> phase(kNumFreqs);  // (deg)
+    FreqResponse freqResponse {std::vector<double>(kNumFreqs),
+        std::vector<double>(kNumFreqs)};  // TODO: Improve. Ensure copy elision or move semantics?
     constexpr double kRadToDeg {180 / gkPi};  // (deg/rad)
     for (int i {0}; i < kNumFreqs; i++)
     {
-        const int kNumSamples {kSamplesPerFreq.at(i)};
-        dynamicSampleSize += kNumSamples;
-        const int kStartSampleIndex = dynamicSampleSize - kNumSamples
+        dynamicSampleSize += kSamplesPerFreq.at(i);
+        const int kStartSampleIndex = dynamicSampleSize - kSamplesPerFreq.at(i)
             + samplesToIgnorePerFreq.at(i);
         const double kAngFreq {kAngFreqs.at(i)};  // (rad/s)
-        const int kIntegrandLength {dynamicSampleSize - kStartSampleIndex};
-        std::vector<double> inPhaseIntegrand(kIntegrandLength);
-        std::vector<double> quadratureIntegrand(kIntegrandLength);
+        std::vector<double> inPhaseIntegrand(dynamicSampleSize
+            - kStartSampleIndex);
+        std::vector<double> quadratureIntegrand(dynamicSampleSize
+            - kStartSampleIndex);
         for (int j {kStartSampleIndex}; j < dynamicSampleSize; j++)
         {
-            const int kIntegrandIndex {j - kStartSampleIndex};
-            const double kOutputSignalRangeVal {kOutputSignal.at(j)};
-            // j * kSamplingPeriod is the time (s)
-            const double kTrigFxnArg {
-                kAngFreq * j * kSamplingPeriod};  // (rad)
-
             // Calculate integrands of in-phase and quadrature Fourier-series
-            // terms--b1 and a1, respectively
-            inPhaseIntegrand.at(kIntegrandIndex) = kOutputSignalRangeVal
-                * std::sin(kTrigFxnArg);
-            quadratureIntegrand.at(kIntegrandIndex) = kOutputSignalRangeVal
-                * std::cos(kTrigFxnArg);
+            // terms--b1 and a1, respectively. Note that j * kSamplingPeriod is
+            // the time (s).
+            inPhaseIntegrand.at(j - kStartSampleIndex) = kOutputSignal.at(j)
+                * std::sin(kAngFreq * j * kSamplingPeriod);
+            quadratureIntegrand.at(j - kStartSampleIndex) = kOutputSignal.at(j)
+                * std::cos(kAngFreq * j * kSamplingPeriod);
         }
 
         // Calculate b1 and a1
-        const double kFactor {2 / kSamplingPeriod};  // (s)
-        const double kInPhaseTerm {kFactor * trapezoidalRule(inPhaseIntegrand,
-            kSamplingPeriod)};
-        const double kQuadratureTerm {kFactor * trapezoidalRule(
+        const double kInPhaseTerm {2 / kSamplingPeriod * trapezoidalRule(
+            inPhaseIntegrand, kSamplingPeriod)};
+        const double kQuadratureTerm {2 / kSamplingPeriod * trapezoidalRule(
             quadratureIntegrand, kSamplingPeriod)};
 
         // Calculate magnitude and phase
-        magnitude.at(i) = 20 * std::log10(std::sqrt(kInPhaseTerm * kInPhaseTerm
-            + kQuadratureTerm * kQuadratureTerm) / kAmplitude);
-        phase.at(i) = kRadToDeg * std::atan2(kQuadratureTerm,
+        freqResponse.magnitude.at(i) = 20 * std::log10(std::sqrt(kInPhaseTerm
+            * kInPhaseTerm + kQuadratureTerm * kQuadratureTerm) / kAmplitude);
+        freqResponse.phase.at(i) = kRadToDeg * std::atan2(kQuadratureTerm,
             kInPhaseTerm);
     }
-    const FreqResponse kFreqResponse {magnitude, phase};
 
-    return kFreqResponse;
+    return freqResponse;
 }
 
 double trapezoidalRule(const std::vector<double>& kVals,
                        const double kStepSize)
 {
-    const double kHalfStep {kStepSize / 2};
-    double integral {kHalfStep * kVals.front()};
+    double integral {kStepSize / 2 * kVals.front()};
     const int kNumValsMinus1 {static_cast<int>(kVals.size()) - 1};
     for (int i {1}; i < kNumValsMinus1; i++)
         integral += kStepSize * kVals.at(i);
-    integral += kHalfStep * kVals.back();
+    integral += kStepSize / 2 * kVals.back();
 
     return integral;
 }

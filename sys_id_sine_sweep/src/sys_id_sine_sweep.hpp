@@ -89,7 +89,7 @@ std::vector<double> generateInputSignal(
     const std::vector<int>& kSamplesPerFreq,
     double kSamplingPeriod);
 
-// TODO: Add function description
+// TODO: Add complete function description
 // kAmplitude, kAngFreqs, kSamplesPerFreq, and kSamplingPeriod need to be same
 // as those above. kCyclesToIgnorePerFreq corresponds to transient response
 // that needs to be ignored to properly calculate frequency response.
