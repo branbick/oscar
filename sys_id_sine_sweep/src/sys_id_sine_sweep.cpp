@@ -116,7 +116,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
 
     int dynamicSampleSize {0};
     FreqResponse freqResponse {std::vector<double>(kNumFreqs),
-        std::vector<double>(kNumFreqs)};  // TODO: Improve. Ensure copy elision or move semantics?
+        std::vector<double>(kNumFreqs)};  // Copy elision
     constexpr double kRadToDeg {180 / gkPi};  // (deg/rad)
     for (int i {0}; i < kNumFreqs; i++)
     {
