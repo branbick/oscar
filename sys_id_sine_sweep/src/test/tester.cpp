@@ -1,7 +1,7 @@
-// Build: g++ tester.cpp sys_id_sine_sweep.cpp -Wall -Wextra -Wpedantic -std=c++17 (-D PRINT_TEST#) -o tester.out
+// Build: g++ tester.cpp ../sys_id_sine_sweep.cpp -Wall -Wextra -Wpedantic -std=c++17 (-D PRINT_TEST#) -o tester.out
 // Execute: ./tester.out
 
-#include "sys_id_sine_sweep.hpp"
+#include "../sys_id_sine_sweep.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -40,7 +40,7 @@ int main()
         kAmplitude, kAngFreqs, kSamplesPerFreq, kSamplingPeriod)};
 
 #ifdef PRINT_TEST3
-    std::ofstream input {"input.csv"};
+    std::ofstream input {"data/input.csv"};
     const int kSizeMinus1 {static_cast<int>(kInputSignal.size()) - 1};
     for (int i {0}; i < kSizeMinus1; i++)
         input << kInputSignal.at(i) << ", ";
@@ -64,7 +64,7 @@ int main()
     // plot(t, input)
     // hold on; plot(t, output); legend('in', 'out');
     // figure; bode(G)
-    std::ifstream outputSignalData {"output.dat"};
+    std::ifstream outputSignalData {"data/output.dat"};
     const int kInputSignalSize {static_cast<int>(kInputSignal.size())};
     std::vector<double> outputSignal(kInputSignalSize);
     int outputSignalIndex {0};

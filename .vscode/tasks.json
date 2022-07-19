@@ -9,7 +9,7 @@
 				"-fdiagnostics-color=always",
 				"-g",
 				"${file}",
-				"${fileDirname}/sys_id_sine_sweep.cpp",
+				"${fileDirname}/../sys_id_sine_sweep.cpp",
 				"-Wall",
 				"-Wextra",
 				"-Wpedantic",
