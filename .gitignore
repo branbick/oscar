@@ -1,3 +1,4 @@
 .vscode/settings.json
 **/*.exe
 **/*.out
+sys_id_sine_sweep/src/test/signal_data
