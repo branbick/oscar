@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-% Inputs
+%% Inputs
 kMinFreq = 10.0;  % (rad/s)
 kMmaxFreq = 100.0;  % (rad/s)
 kNumFreqs = 5;
@@ -14,15 +14,14 @@ kAmplitude = 0.5;
 
 kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq
 
-% - Print options: 1 == "yes, print"; 0 == "no, don't print"
-PRINT_TEST1 = 1;
-PRINT_TEST2 = 1;
-PRINT_TEST3 = 0;
-PRINT_TEST4 = 0;
-PRINT_TEST5 = 0;
+% Print options: true == ON / "please print"; false == OFF / "don't print"
+PRINT_TEST1 = true;
+PRINT_TEST2 = true;
+PRINT_TEST3 = false;
+PRINT_TEST4 = false;
+PRINT_TEST5 = false;
 
-% Generate and optionally print a logarithmically spaced angular frequency
-% vector
+%% Generate and optionally print a logarithmically spaced angular frequency vector
 kAngFreqs = logspace(log10(kMinFreq), log10(kMmaxFreq), kNumFreqs);
 
 if PRINT_TEST1
@@ -33,8 +32,7 @@ if PRINT_TEST1
    fprintf('\n')
 end
 
-% Calculate and optionally print the number of samples for each element of
-% kAngFreqs
+%% Calculate and optionally print the number of samples for each element of kAngFreqs
 kSamplesPerFreq = calcSamplesPerFreq(kAngFreqs, kCyclesPerFreq, kSamplingFreq);
 
 if PRINT_TEST2
@@ -45,14 +43,17 @@ if PRINT_TEST2
    fprintf('\n')
 end
 
+%% Generate and optionally print (to a .csv file) a corresponding input signal
+kSamplingPeriod = 1 / kSamplingFreq;  % (s)
+kInputSignal = generateInputSignal(kAmplitude, kAngFreqs, kSamplesPerFreq, ...
+   kSamplingPeriod);
 
-
-
-
-
-
-
-
-
-
-
+if PRINT_TEST3
+   inputSignalData = fopen(fullfile(pwd, 'signal_data\input.csv'), 'a');
+   kInputSignalSizeMinus1 = length(kInputSignal) - 1;
+   for i = 1:kInputSignalSizeMinus1
+      fprintf(inputSignalData, '%.6f, ', kInputSignal(i));
+   end
+   fprintf(inputSignalData, '%.6f', kInputSignal(end));
+   fclose(inputSignalData);
+end
