@@ -10,8 +10,7 @@ int main()
 {
     // Generate and optionally print a logarithmically spaced angular frequency
     // vector
-    const std::vector<double> kAngFreqs {
-        logSpace(10.0, 1000.0, 10)};  // (rad/s)
+    const std::vector<double> kAngFreqs {logSpace(10.0, 100.0, 5)};  // (rad/s)
 
 #ifdef PRINT_TEST1
     std::cout << "logSpace test:" << std::endl;
@@ -22,9 +21,9 @@ int main()
 
     // Calculate and optionally print the number of samples for each element of
     // kAngFreqs
-    constexpr double kSamplingFreq {1000.0};  // (s)
+    constexpr double kSamplingFreq {100.0};  // (Hz)
     const std::vector<int> kSamplesPerFreq {
-        calcSamplesPerFreq(kAngFreqs, 30, kSamplingFreq)};
+        calcSamplesPerFreq(kAngFreqs, 8, kSamplingFreq)};
 
 #ifdef PRINT_TEST2
     std::cout << "calcSamplesPerFreq test:" << std::endl;
@@ -35,7 +34,7 @@ int main()
 
     // Generate and optionally print (to a .csv file) a corresponding input
     // signal
-    constexpr double kAmplitude {1.0};
+    constexpr double kAmplitude {0.5};
     constexpr double kSamplingPeriod {1 / kSamplingFreq};  // (s)
     const std::vector<double> kInputSignal {generateInputSignal(
         kAmplitude, kAngFreqs, kSamplesPerFreq, kSamplingPeriod)};
@@ -55,7 +54,7 @@ int main()
     //
     // MATLAB code:
     // input = csvread('input.csv');
-    // fs = 1000;  % (Hz)
+    // fs = 100;  % (Hz)
     // t = [0 : length(input) - 1] / fs;  % (s)
     // wn = 100;  % (rad/s)
     // zeta = 0.5;
@@ -79,7 +78,7 @@ int main()
     }
     outputSignalData.close();
     const FreqResponse kFreqResponse {calcMagAndPhase(outputSignal, kAmplitude,
-        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, 15)};
+        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, 5)};
 
 #ifdef PRINT_TEST4
     std::cout << "calcMagAndPhase test:" << std::endl;
