@@ -90,7 +90,8 @@ int main()
     }
     outputSignalData.close();
     const FreqResponse kFreqResponse {calcMagAndPhase(outputSignal, kAmplitude,
-        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, kCyclesToIgnorePerFreq)};
+        kAngFreqs, kSamplesPerFreq, kSamplingPeriod, kCyclesPerFreq,
+        kCyclesToIgnorePerFreq)};
 
 #ifdef PRINT_TEST4
     std::cout << "calcMagAndPhase test:" << std::endl;
