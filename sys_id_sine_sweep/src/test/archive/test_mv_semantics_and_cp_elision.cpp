@@ -6,11 +6,11 @@
 
 class Random
 {
-    public:
-        Random() {std::cout << "Constructed" << std::endl;}
-        Random(const Random& random) {std::cout << "Copied" << std::endl;}
-        Random(Random&& random) {std::cout << "Moved" << std::endl;}
-        ~Random() {std::cout << "Destructed" << std::endl;}
+public:
+    Random() {std::cout << "Constructed" << std::endl;}
+    Random(const Random& random) {std::cout << "Copied" << std::endl;}
+    Random(Random&& random) {std::cout << "Moved" << std::endl;}
+    ~Random() {std::cout << "Destructed" << std::endl;}
 };
 
 struct Arbitrary
