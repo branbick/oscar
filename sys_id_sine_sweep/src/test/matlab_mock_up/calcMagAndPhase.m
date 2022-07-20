@@ -39,5 +39,6 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
          + kQuadratureCoeff1^2) / kAmplitude);
       freqResponse.phase(i) = kRadToDeg * atan2(kQuadratureCoeff1, ...
          kInPhaseCoeff1);
+   end
 
 end
