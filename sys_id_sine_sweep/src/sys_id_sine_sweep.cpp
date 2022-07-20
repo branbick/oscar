@@ -37,22 +37,18 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
     // Nyquist-Shannon sampling theorem is adhered to. Also, check
     // kCyclesPerFreq: it must be > 0.
 
-    // In words, the number of samples for kAngFreqs.at(i) equals the period
-    // corresponding to kAngFreqs.at(i) [2 * gkPi / kAngFreqs.at(i)] divided by
-    // the sampling period (1 / kSamplingFreq) multiplied by the number of
-    // cycles, where the latter two terms are constant across kAngFreqs.
+    // In words, the number of samples for kAngFreqs.at(i) equals the floor of
+    // the following quantity: the period corresponding to kAngFreqs.at(i) [2
+    // * gkPi / kAngFreqs.at(i)], divided by the sampling period (1 /
+    // kSamplingFreq), multiplied by the number of cycles--where the latter two
+    // terms are constant across kAngFreqs--plus one.
     const int kNumFreqs {static_cast<int>(kAngFreqs.size())};
     std::vector<int> samplesPerFreq(kNumFreqs);
-    const double kConst {
-        2 * gkPi * kSamplingFreq * kCyclesPerFreq};  // (rad/s)
+    const double kConst {2 * gkPi * kSamplingFreq
+        * kCyclesPerFreq};  // (rad/s)
     for (int i {0}; i < kNumFreqs; i++)
         samplesPerFreq.at(i) = static_cast<int>(std::floor(kConst
-            / kAngFreqs.at(i)));
-
-    // Increment the last element by 1 to properly terminate the input signal
-    // later generated using the return value of this function--among other
-    // arguments. (See generateInputSignal.)
-    samplesPerFreq.back()++;
+            / kAngFreqs.at(i) + 1));
 
     return samplesPerFreq;
 }
@@ -89,9 +85,6 @@ std::vector<double> generateInputSignal(
         }
     }
 
-    // - Override the last element to terminate the range values with 0.0
-    inputSignal.back() = 0.0;
-
     return inputSignal;
 }
 
@@ -108,11 +101,11 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
     // transient response of kOutputSignal--for each element of kAngFreqs
     const int kNumFreqs {static_cast<int>(kAngFreqs.size())};
     std::vector<int> samplesToIgnorePerFreq(kNumFreqs);
-    const double kConst {
-        2 * gkPi / kSamplingPeriod * kCyclesToIgnorePerFreq};  // (rad/s)
+    const double kConst {2 * gkPi / kSamplingPeriod
+        * kCyclesToIgnorePerFreq};  // (rad/s)
     for (int i {0}; i < kNumFreqs; i++)
         samplesToIgnorePerFreq.at(i) = static_cast<int>(std::floor(kConst
-            / kAngFreqs.at(i)));
+            / kAngFreqs.at(i) + 1));
         // TODO: Ensure that samplesToIgnorePerFreq.at(i)
         // < kSamplesPerFreq.at(i) before proceeding
 
