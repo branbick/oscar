@@ -93,6 +93,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
                              const std::vector<double>& kAngFreqs,
                              const std::vector<int>& kSamplesPerFreq,
                              const double kSamplingPeriod,
+                             const int kCyclesPerFreq,
                              const int kCyclesToIgnorePerFreq)
 {
     // TODO: Clean up comments
@@ -136,9 +137,11 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
         }
 
         // Calculate b1 and a1
-        const double kInPhaseCoeff1 {2 / kSamplingPeriod * trapezoidalRule(
+        const double kInPhaseCoeff1 {2 / ((kCyclesPerFreq
+            - kCyclesToIgnorePerFreq) * kSamplingPeriod) * trapezoidalRule(
             inPhaseIntegrand1, kSamplingPeriod)};
-        const double kQuadratureCoeff1 {2 / kSamplingPeriod * trapezoidalRule(
+        const double kQuadratureCoeff1 {2 / ((kCyclesPerFreq
+            - kCyclesToIgnorePerFreq) * kSamplingPeriod) * trapezoidalRule(
             quadratureIntegrand1, kSamplingPeriod)};
 
         // Calculate the magnitude and phase
