@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 int main()
 {
@@ -95,14 +96,16 @@ int main()
 
 #ifdef PRINT_TEST4
     std::cout << "calcMagAndPhase test:" << std::endl;
-    std::cout << "- magnitude: ";
-    const int kMagAndPhaseSize {static_cast<int>(
-        kFreqResponse.magnitude.size())};
-    for (int i {0}; i < kMagAndPhaseSize; i++)
-        std::cout << kFreqResponse.magnitude.at(i) << " ";
-    std::cout << std::endl << "- phase: ";
-    for (int i {0}; i < kMagAndPhaseSize; i++)
-        std::cout << kFreqResponse.phase.at(i) << " ";
+    std::cout << std::fixed << std::setprecision(4);
+    std::cout << "- frequency (rad/s): ";
+    for (const double kAngFreq : kAngFreqs)
+        std::cout << std::setw(9) << kAngFreq << " ";
+    std::cout << std::endl << "- magnitude (dB)   : ";
+    for (const double kMag : kFreqResponse.magnitude)
+        std::cout << std::setw(9) << kMag << " ";
+    std::cout << std::endl << "- phase     (deg)  : ";
+    for (const double kPhase : kFreqResponse.phase)
+        std::cout << std::setw(9) << kPhase << " ";
     std::cout << std::endl;
 #endif
 
