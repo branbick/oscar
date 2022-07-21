@@ -95,17 +95,17 @@ kFreqResponse = calcMagAndPhase(outputSignal, kAmplitude, kAngFreqs, ...
    kSamplesPerFreq, kSamplingPeriod, kCyclesPerFreq, kCyclesToIgnorePerFreq);
 
 if PRINT_TEST4
-   fprintf('calcMagAndPhase test:\n- frequency (rad/s): ')
-   freqMagAndPhaseSize = length(kAngFreqs);
-   for i = 1:freqMagAndPhaseSize
+   fprintf('calcMagAndPhase test:\n')
+   fprintf('- frequency (rad/s): ')
+   for i = 1:kNumFreqs
       fprintf('% 9.4f ', kAngFreqs(i))
    end
    fprintf('\n- magnitude (dB)   : ')
-   for i = 1:freqMagAndPhaseSize
+   for i = 1:kNumFreqs
       fprintf('% 9.4f ', kFreqResponse.magnitude(i))
    end
    fprintf('\n- phase     (deg)  : ')
-   for i = 1:freqMagAndPhaseSize
+   for i = 1:kNumFreqs
       fprintf('% 9.4f ', kFreqResponse.phase(i))
    end
    fprintf('\n')
