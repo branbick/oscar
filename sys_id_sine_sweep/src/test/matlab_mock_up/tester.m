@@ -67,16 +67,26 @@ end
 % - lsim
 time = (0 : length(kInputSignal) - 1) * kSamplingPeriod;  % (s)
 s = tf('s');
+
+% - - Standard transfer function of a second-order system
 sysBeingIdentified = naturalFreq^2 / (s^2 + 2 * dampingRatio * naturalFreq ...
    * s + naturalFreq^2);
+
 outputSignal = lsim(sysBeingIdentified, kInputSignal, time)';
 
 % - Plots
-plot(time, kInputSignal, time, outputSignal)
+% - - Input and output signals
+figure; plot(time, kInputSignal, time, outputSignal)
 xlabel('Time (s)'), ylabel('Signal')
-legend('input', 'output')
+legend('input', 'output', 'Location', 'best')
 grid on, grid minor
+
+% - - Bode
 figure; bode(sysBeingIdentified)
+hold on
+bode(sysBeingIdentified, kAngFreqs)
+hold off
+legend('nominal', 'kAngFreqs', 'Location', 'best')
 xlim([kMinFreq kMaxFreq])
 grid on, grid minor
 
@@ -85,15 +95,18 @@ kFreqResponse = calcMagAndPhase(outputSignal, kAmplitude, kAngFreqs, ...
    kSamplesPerFreq, kSamplingPeriod, kCyclesPerFreq, kCyclesToIgnorePerFreq);
 
 if PRINT_TEST4
-   fprintf('calcMagAndPhase test:\n')
-   fprintf('- magnitude: ')
-   kMagAndPhaseSize = length(kFreqResponse.magnitude);
-   for i = 1:kMagAndPhaseSize
-      fprintf('%.4f ', kFreqResponse.magnitude(i))
+   fprintf('calcMagAndPhase test:\n- frequency (rad/s): ')
+   freqMagAndPhaseSize = length(kAngFreqs);
+   for i = 1:freqMagAndPhaseSize
+      fprintf('% 9.4f ', kAngFreqs(i))
    end
-   fprintf('\n- phase: ')
-   for i = 1:kMagAndPhaseSize
-      fprintf('%.4f ', kFreqResponse.phase(i))
+   fprintf('\n- magnitude (dB)   : ')
+   for i = 1:freqMagAndPhaseSize
+      fprintf('% 9.4f ', kFreqResponse.magnitude(i))
+   end
+   fprintf('\n- phase     (deg)  : ')
+   for i = 1:freqMagAndPhaseSize
+      fprintf('% 9.4f ', kFreqResponse.phase(i))
    end
    fprintf('\n')
 end
