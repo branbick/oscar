@@ -26,7 +26,7 @@ naturalFreq = 100;  % (rad/s)
 dampingRatio = 0.5;
 
 %% Generate and optionally print a logarithmically spaced angular frequency vector
-kAngFreqs = logspace(log10(kMinFreq), log10(kMaxFreq), kNumFreqs);
+kAngFreqs = logspace(log10(kMinFreq), log10(kMaxFreq), kNumFreqs);  % (rad/s)
 
 if PRINT_TEST1
    fprintf('logSpace test:\n')
@@ -67,16 +67,16 @@ end
 % - lsim
 time = (0 : length(kInputSignal) - 1) * kSamplingPeriod;  % (s)
 s = tf('s');
-sysBeingIDed = naturalFreq^2 / (s^2 + 2 * dampingRatio * naturalFreq * s ...
-   + naturalFreq^2);
-outputSignal = lsim(sysBeingIDed, kInputSignal, time)';
+sysBeingIdentified = naturalFreq^2 / (s^2 + 2 * dampingRatio * naturalFreq ...
+   * s + naturalFreq^2);
+outputSignal = lsim(sysBeingIdentified, kInputSignal, time)';
 
 % - Plots
 plot(time, kInputSignal, time, outputSignal)
 xlabel('Time (s)'), ylabel('Signal')
-legend('in', 'out')
+legend('input', 'output')
 grid on, grid minor
-figure; bode(sysBeingIDed)
+figure; bode(sysBeingIdentified)
 xlim([kMinFreq kMaxFreq])
 grid on, grid minor
 

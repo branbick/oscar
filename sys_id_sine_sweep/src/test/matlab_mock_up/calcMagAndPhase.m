@@ -22,14 +22,14 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
       quadratureIntegrand1 = NaN(1, dynamicSampleSize - kStartSampleIndex + 1);
       for j = kStartSampleIndex:dynamicSampleSize
          inPhaseIntegrand1(j - kStartSampleIndex + 1) = kOutputSignal(j) ...
-            * sin(kAngFreq * j * kSamplingPeriod);
+            * sin(kAngFreq * (j - 1) * kSamplingPeriod);
          quadratureIntegrand1(j - kStartSampleIndex + 1) = kOutputSignal(j) ...
-            * cos(kAngFreq * j * kSamplingPeriod);
+            * cos(kAngFreq * (j - 1) * kSamplingPeriod);
       end
       
-      % START MATLAB-specific code
+      % Start of MATLAB-specific code
       timePoints = (0 : length(inPhaseIntegrand1) - 1) * kSamplingPeriod;
-      % END MATLAB-specific code
+      % End of MATLAB-specific code
       kInPhaseCoeff1 = 2 / ((kCyclesPerFreq - kCyclesToIgnorePerFreq) ...
          * kSamplingPeriod) * trapz(timePoints, inPhaseIntegrand1);
       kQuadratureCoeff1 = 2 / ((kCyclesPerFreq - kCyclesToIgnorePerFreq) ...
