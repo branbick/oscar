@@ -12,21 +12,21 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
    kRadToDeg = 180 / pi;  % (deg/rad)
    for i = 1:kNumFreqs
       % Calculate the number of samples to collect for one cycle
-      samplesForOneCycle = floor(kConst1 / kAngFreqs(i) + 1);
+      kSamplesForOneCycle = round(kConst1 / kAngFreqs(i)) + 1;
 
       % Calculate the number of samples to ignore, which correspond to the
       % transient response of kOutputSignal
-      samplesToIgnore = floor(kConst2 / kAngFreqs(i) + 1);
+      kSamplesToIgnore = round(kConst2 / kAngFreqs(i));
       % TODO: Ensure that samplesToIgnore < kSamplesPerFreq(i) before
       % proceeding
 
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
-      startSampleIndex = startSampleIndex + samplesToIgnore;
+      startSampleIndex = startSampleIndex + kSamplesToIgnore;
       kAngFreq = kAngFreqs(i);  % (rad/s)
-      inPhaseIntegrand1 = zeros(1, samplesForOneCycle);
-      quadratureIntegrand1 = zeros(1, samplesForOneCycle);
-      for j = startSampleIndex : startSampleIndex + samplesForOneCycle - 1
+      inPhaseIntegrand1 = zeros(1, kSamplesForOneCycle);
+      quadratureIntegrand1 = zeros(1, kSamplesForOneCycle);
+      for j = startSampleIndex : startSampleIndex + kSamplesForOneCycle - 1
          % (j - 1) * kSamplingPeriod == time (s)
          inPhaseIntegrand1(j - startSampleIndex + 1) = kOutputSignal(j) ...
             * sin(kAngFreq * (j - 1) * kSamplingPeriod);
@@ -36,7 +36,7 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
       
       % Calculate b1 and a1
       % - Start of MATLAB-specific code
-      time = (0 : samplesForOneCycle - 1) * kSamplingPeriod;
+      time = (0 : kSamplesForOneCycle - 1) * kSamplingPeriod;
       % - End of MATLAB-specific code
       kInPhaseCoeff1 = kAngFreq / pi * trapz(time, inPhaseIntegrand1);
       kQuadratureCoeff1 = kAngFreq / pi * trapz(time, quadratureIntegrand1);

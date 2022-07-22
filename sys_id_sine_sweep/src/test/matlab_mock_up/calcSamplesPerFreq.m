@@ -14,7 +14,7 @@ function samplesPerFreq = calcSamplesPerFreq(kAngFreqs, kCyclesPerFreq, ...
    samplesPerFreq = zeros(1, kNumFreqs);
    kConst = 2 * pi * kSamplingFreq * kCyclesPerFreq;  % (rad/s)
    for i = 1:kNumFreqs
-      samplesPerFreq(i) = floor(kConst / kAngFreqs(i) + 1);
+      samplesPerFreq(i) = floor(kConst / kAngFreqs(i)) + 1;
    end
 
 end
