@@ -5,7 +5,7 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
 
    kConst1 = 2 * pi / kSamplingPeriod;  % (rad/s)
    kConst2 = kConst1 * kCyclesToIgnorePerFreq;  % (rad/s)
-   dynamicSampleSize = 0;
+   startSampleIndex = 1;
    kNumFreqs = length(kAngFreqs);
    freqResponse.magnitude = zeros(1, kNumFreqs);
    freqResponse.phase = zeros(1, kNumFreqs);
@@ -22,17 +22,15 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
 
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
-      dynamicSampleSize = dynamicSampleSize + kSamplesPerFreq(i);
-      kStartSampleIndex = dynamicSampleSize - kSamplesPerFreq(i) ...
-         + samplesToIgnore + 1;
+      startSampleIndex = startSampleIndex + samplesToIgnore;
       kAngFreq = kAngFreqs(i);  % (rad/s)
       inPhaseIntegrand1 = zeros(1, samplesForOneCycle);
       quadratureIntegrand1 = zeros(1, samplesForOneCycle);
-      for j = kStartSampleIndex : kStartSampleIndex + samplesForOneCycle - 1
+      for j = startSampleIndex : startSampleIndex + samplesForOneCycle - 1
          % (j - 1) * kSamplingPeriod == time (s)
-         inPhaseIntegrand1(j - kStartSampleIndex + 1) = kOutputSignal(j) ...
+         inPhaseIntegrand1(j - startSampleIndex + 1) = kOutputSignal(j) ...
             * sin(kAngFreq * (j - 1) * kSamplingPeriod);
-         quadratureIntegrand1(j - kStartSampleIndex + 1) = kOutputSignal(j) ...
+         quadratureIntegrand1(j - startSampleIndex + 1) = kOutputSignal(j) ...
             * cos(kAngFreq * (j - 1) * kSamplingPeriod);
       end
       
@@ -48,6 +46,9 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
          + kQuadratureCoeff1^2) / kAmplitude);
       freqResponse.phase(i) = kRadToDeg * atan2(kQuadratureCoeff1, ...
          kInPhaseCoeff1);
+
+      % Advance startSampleIndex to prepare for the next iteration
+      startSampleIndex = sum(kSamplesPerFreq(1:i)) + 1;
    end
 
 end
