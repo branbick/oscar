@@ -92,7 +92,7 @@ grid on, grid minor
 
 % C++ code
 kFreqResponse = calcMagAndPhase(outputSignal, kAmplitude, kAngFreqs, ...
-   kSamplesPerFreq, kSamplingPeriod, kCyclesPerFreq, kCyclesToIgnorePerFreq);
+   kSamplesPerFreq, kSamplingPeriod, kCyclesToIgnorePerFreq);
 
 if PRINT_TEST4
    fprintf('calcMagAndPhase test:\n')

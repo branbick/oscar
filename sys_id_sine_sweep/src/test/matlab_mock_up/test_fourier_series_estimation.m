@@ -28,7 +28,6 @@ if N * T0 > t(end)
 end
 
 %% Calculations (cont.)
-
 % - Fourier: analyze N period(s) of f
 nIndex = find(t < 1.000001 * N * T0 & t > 0.999999 * N * T0);
 tN = t(1:nIndex);

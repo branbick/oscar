@@ -1,36 +1,34 @@
 function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
-   kAngFreqs, kSamplesPerFreq, kSamplingPeriod, kCyclesPerFreq, ...
-   kCyclesToIgnorePerFreq)
+   kAngFreqs, kSamplesPerFreq, kSamplingPeriod, kCyclesToIgnorePerFreq)
 
    % TODO: Clean up comments
 
-   % Calculate the number of samples to ignore--which correspond to the
-   % transient response of kOutputSignal--for each element of kAngFreqs
-   kNumFreqs = length(kAngFreqs);
-   samplesToIgnorePerFreq = zeros(1, kNumFreqs);
-   kConst = 2 * pi / kSamplingPeriod * kCyclesToIgnorePerFreq;  % (rad/s)
-   for i = 1:kNumFreqs
-      samplesToIgnorePerFreq(i) = floor(kConst / kAngFreqs(i) + 1);
-   end
-      % TODO: Ensure that samplesToIgnorePerFreq(i) < kSamplesPerFreq(i)
-      % before proceeding
-
-   % Calculate the frequency response: magnitude and phase
+   kConst1 = 2 * pi / kSamplingPeriod;  % (rad/s)
+   kConst2 = kConst1 * kCyclesToIgnorePerFreq;  % (rad/s)
    dynamicSampleSize = 0;
+   kNumFreqs = length(kAngFreqs);
    freqResponse.magnitude = zeros(1, kNumFreqs);
    freqResponse.phase = zeros(1, kNumFreqs);
    kRadToDeg = 180 / pi;  % (deg/rad)
    for i = 1:kNumFreqs
+      % Calculate the number of samples to collect for one cycle
+      samplesForOneCycle = floor(kConst1 / kAngFreqs(i) + 1);
+
+      % Calculate the number of samples to ignore, which correspond to the
+      % transient response of kOutputSignal
+      samplesToIgnore = floor(kConst2 / kAngFreqs(i) + 1);
+      % TODO: Ensure that samplesToIgnore < kSamplesPerFreq(i) before
+      % proceeding
+
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
       dynamicSampleSize = dynamicSampleSize + kSamplesPerFreq(i);
       kStartSampleIndex = dynamicSampleSize - kSamplesPerFreq(i) ...
-         + samplesToIgnorePerFreq(i) + 1;
+         + samplesToIgnore + 1;
       kAngFreq = kAngFreqs(i);  % (rad/s)
-      inPhaseIntegrand1 = zeros(1, dynamicSampleSize - kStartSampleIndex + 1);
-      quadratureIntegrand1 = zeros(1, dynamicSampleSize - kStartSampleIndex ...
-         + 1);
-      for j = kStartSampleIndex:dynamicSampleSize
+      inPhaseIntegrand1 = zeros(1, samplesForOneCycle);
+      quadratureIntegrand1 = zeros(1, samplesForOneCycle);
+      for j = kStartSampleIndex : kStartSampleIndex + samplesForOneCycle - 1
          % (j - 1) * kSamplingPeriod == time (s)
          inPhaseIntegrand1(j - kStartSampleIndex + 1) = kOutputSignal(j) ...
             * sin(kAngFreq * (j - 1) * kSamplingPeriod);
@@ -40,14 +38,12 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
       
       % Calculate b1 and a1
       % - Start of MATLAB-specific code
-      timePoints = (0 : length(inPhaseIntegrand1) - 1) * kSamplingPeriod;
+      time = (0 : samplesForOneCycle - 1) * kSamplingPeriod;
       % - End of MATLAB-specific code
-      kInPhaseCoeff1 = 2 / ((kCyclesPerFreq - kCyclesToIgnorePerFreq) ...
-         * kSamplingPeriod) * trapz(timePoints, inPhaseIntegrand1);
-      kQuadratureCoeff1 = 2 / ((kCyclesPerFreq - kCyclesToIgnorePerFreq) ...
-         * kSamplingPeriod) * trapz(timePoints, quadratureIntegrand1);
+      kInPhaseCoeff1 = kAngFreq / pi * trapz(time, inPhaseIntegrand1);
+      kQuadratureCoeff1 = kAngFreq / pi * trapz(time, quadratureIntegrand1);
       
-      % Calculate the magnitude and phase
+      % Calculate the frequency response: magnitude and phase
       freqResponse.magnitude(i) = 20 * log10(sqrt(kInPhaseCoeff1^2 ...
          + kQuadratureCoeff1^2) / kAmplitude);
       freqResponse.phase(i) = kRadToDeg * atan2(kQuadratureCoeff1, ...
