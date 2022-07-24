@@ -9,7 +9,6 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
    kNumFreqs = length(kAngFreqs);
    freqResponse.magnitude = zeros(1, kNumFreqs);
    freqResponse.phase = zeros(1, kNumFreqs);
-   kRadToDeg = 180 / pi;  % (deg/rad)
    for i = 1:kNumFreqs
       % Calculate the number of samples to collect for one cycle
       kSamplesForOneCycle = round(kConst1 / kAngFreqs(i)) + 1;
@@ -44,8 +43,7 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
       % Calculate the frequency response: magnitude and phase
       freqResponse.magnitude(i) = 20 * log10(sqrt(kInPhaseCoeff1^2 ...
          + kQuadratureCoeff1^2) / kAmplitude);
-      freqResponse.phase(i) = kRadToDeg * atan2(kQuadratureCoeff1, ...
-         kInPhaseCoeff1);
+      freqResponse.phase(i) = atan2d(kQuadratureCoeff1, kInPhaseCoeff1);
 
       % Advance startSampleIndex to prepare for the next iteration
       startSampleIndex = sum(kSamplesPerFreq(1:i)) + 1;
