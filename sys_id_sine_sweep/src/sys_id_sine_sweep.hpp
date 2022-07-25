@@ -90,7 +90,7 @@ std::vector<double> generateInputSignal(
     double kSamplingPeriod);
 
 // TODO: Add complete function description
-// kAmplitude, kAngFreqs, kSamplesPerFreq, and kSamplingPeriod, need to be same
+// kAmplitude, kAngFreqs, kSamplesPerFreq, and kSamplingPeriod need to be same
 // as those above. kCyclesToIgnorePerFreq corresponds to transient response
 // that needs to be ignored to properly calculate frequency response.
 FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
