@@ -5,12 +5,12 @@ clc
 %% Inputs
 kMinFreq = 10.0;  % (rad/s)
 kMaxFreq = 100.0;  % (rad/s)
-kNumFreqs = 5;
+kNumFreqs = 3;
 
 kCyclesPerFreq = 5;
-kSamplingFreq = 50.0;  % Must be >= kMaxFreq / pi (Hz)
+kSamplingFreq = 100.0;  % Must be >= kMaxFreq / pi (Hz)
 
-kAmplitude = 0.5;
+kAmplitude = 1.0;
 
 kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq
 

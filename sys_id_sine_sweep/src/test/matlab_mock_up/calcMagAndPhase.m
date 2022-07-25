@@ -11,18 +11,18 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
    freqResponse.phase = zeros(1, kNumFreqs);
    for i = 1:kNumFreqs
       % Calculate the number of samples to collect for one cycle
-      kSamplesForOneCycle = round(kConst1 / kAngFreqs(i)) + 1;
+      kAngFreq = kAngFreqs(i);  % (rad/s)
+      kSamplesForOneCycle = round(kConst1 / kAngFreq) + 1;
 
       % Calculate the number of samples to ignore, which correspond to the
       % transient response of kOutputSignal
-      kSamplesToIgnore = round(kConst2 / kAngFreqs(i));
-      % TODO: Ensure that samplesToIgnore < kSamplesPerFreq(i) before
+      kSamplesToIgnore = round(kConst2 / kAngFreq);
+      % TODO: Ensure that kSamplesToIgnore < kSamplesPerFreq(i) before
       % proceeding
 
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
       startSampleIndex = startSampleIndex + kSamplesToIgnore;
-      kAngFreq = kAngFreqs(i);  % (rad/s)
       inPhaseIntegrand1 = zeros(1, kSamplesForOneCycle);
       quadratureIntegrand1 = zeros(1, kSamplesForOneCycle);
       for j = startSampleIndex : startSampleIndex + kSamplesForOneCycle - 1
