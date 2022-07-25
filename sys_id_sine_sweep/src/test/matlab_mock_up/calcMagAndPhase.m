@@ -22,14 +22,14 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
 
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
-      startSampleIndex = startSampleIndex + kSamplesToIgnore;
       inPhaseIntegrand1 = zeros(1, kSamplesForOneCycle);
       quadratureIntegrand1 = zeros(1, kSamplesForOneCycle);
-      for j = startSampleIndex : startSampleIndex + kSamplesForOneCycle - 1
+      startSampleIndex = startSampleIndex + kSamplesToIgnore;
+      for j = 1:kSamplesForOneCycle
          % (j - 1) * kSamplingPeriod == time (s)
-         inPhaseIntegrand1(j - startSampleIndex + 1) = kOutputSignal(j) ...
+         inPhaseIntegrand1(j) = kOutputSignal(j - 1 + startSampleIndex) ...
             * sin(kAngFreq * (j - 1) * kSamplingPeriod);
-         quadratureIntegrand1(j - startSampleIndex + 1) = kOutputSignal(j) ...
+         quadratureIntegrand1(j) = kOutputSignal(j - 1 + startSampleIndex) ...
             * cos(kAngFreq * (j - 1) * kSamplingPeriod);
       end
       
