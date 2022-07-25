@@ -122,13 +122,13 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
         // Fourier-series coefficients--i.e., b1 and a1, respectively
         std::vector<double> inPhaseIntegrand1(kSamplesForOneCycle);
         std::vector<double> quadratureIntegrand1(kSamplesForOneCycle);
-        for (int j {startSampleIndex += kSamplesToIgnore}; j < startSampleIndex
-            + kSamplesForOneCycle; j++)
+        startSampleIndex += kSamplesToIgnore;
+        for (int j {0}; j < kSamplesForOneCycle; j++)
         {
             // j * kSamplingPeriod == time (s)
-            inPhaseIntegrand1.at(j - startSampleIndex) = kOutputSignal.at(j)
+            inPhaseIntegrand1.at(j) = kOutputSignal.at(j + startSampleIndex)
                 * std::sin(kAngFreq * j * kSamplingPeriod);
-            quadratureIntegrand1.at(j - startSampleIndex) = kOutputSignal.at(j)
+            quadratureIntegrand1.at(j) = kOutputSignal.at(j + startSampleIndex)
                 * std::cos(kAngFreq * j * kSamplingPeriod);
         }
 
