@@ -48,7 +48,7 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
         * kCyclesPerFreq};  // (rad/s)
     for (int i {0}; i < kNumFreqs; i++)
         samplesPerFreq.at(i) = static_cast<int>(std::floor(kConst
-            / kAngFreqs.at(i) + 1));
+            / kAngFreqs.at(i))) + 1;
 
     return samplesPerFreq;
 }
@@ -93,63 +93,63 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
                              const std::vector<double>& kAngFreqs,
                              const std::vector<int>& kSamplesPerFreq,
                              const double kSamplingPeriod,
-                             const int kCyclesPerFreq,
                              const int kCyclesToIgnorePerFreq)
 {
     // TODO: Clean up comments
 
-    // Calculate the number of samples to ignore--which correspond to the
-    // transient response of kOutputSignal--for each element of kAngFreqs
+    const double kConst1 {2 * gkPi / kSamplingPeriod};  // (rad/s)
+    const double kConst2 {kConst1 * kCyclesToIgnorePerFreq};  // (rad/s)
+    int startSampleIndex {0};
     const int kNumFreqs {static_cast<int>(kAngFreqs.size())};
-    std::vector<int> samplesToIgnorePerFreq(kNumFreqs);
-    const double kConst {2 * gkPi / kSamplingPeriod
-        * kCyclesToIgnorePerFreq};  // (rad/s)
-    for (int i {0}; i < kNumFreqs; i++)
-        samplesToIgnorePerFreq.at(i) = static_cast<int>(std::floor(kConst
-            / kAngFreqs.at(i) + 1));
-        // TODO: Ensure that samplesToIgnorePerFreq.at(i)
-        // < kSamplesPerFreq.at(i) before proceeding
-
-    // Calculate the frequency response: magnitude and phase
-    int dynamicSampleSize {0};
     FreqResponse freqResponse {std::vector<double>(kNumFreqs),
         std::vector<double>(kNumFreqs)};  // Copy elision
     constexpr double kRadToDeg {180 / gkPi};  // (deg/rad)
+    int samplesThusFar {0};
     for (int i {0}; i < kNumFreqs; i++)
     {
-        // Calculate the integrands of the first in-phase and quadrature
-        // Fourier-series coefficients--i.e., b1 and a1, respectively
-        dynamicSampleSize += kSamplesPerFreq.at(i);
-        const int kStartSampleIndex = dynamicSampleSize - kSamplesPerFreq.at(i)
-            + samplesToIgnorePerFreq.at(i);
+        // Calculate the number of samples to collect for one cycle
         const double kAngFreq {kAngFreqs.at(i)};  // (rad/s)
-        std::vector<double> inPhaseIntegrand1(dynamicSampleSize
-            - kStartSampleIndex);
-        std::vector<double> quadratureIntegrand1(dynamicSampleSize
-            - kStartSampleIndex);
-        for (int j {kStartSampleIndex}; j < dynamicSampleSize; j++)
+        const int kSamplesForOneCycle {static_cast<int>(std::round(kConst1
+            / kAngFreq)) + 1};
+
+        // Calculate the number of samples to ignore, which correspond to the
+        // transient response of kOutputSignal
+        const int kSamplesToIgnore {static_cast<int>(std::round(kConst2
+            / kAngFreq)) + 1};
+        // TODO: Ensure that kSamplesToIgnore < kSamplesPerFreq.at(i) before
+        // proceeding
+
+        // Calculate the integrands of the first in-phase and quadrature
+        // Fourier- series coefficients--i.e., b1 and a1, respectively
+        startSampleIndex += kSamplesToIgnore;
+        std::vector<double> inPhaseIntegrand1(kSamplesForOneCycle);
+        std::vector<double> quadratureIntegrand1(kSamplesForOneCycle);
+        for (int j {startSampleIndex}; j < startSampleIndex
+            + kSamplesForOneCycle; j++)
         {
             // j * kSamplingPeriod == time (s)
-            inPhaseIntegrand1.at(j - kStartSampleIndex) = kOutputSignal.at(j)
+            inPhaseIntegrand1.at(j - startSampleIndex) = kOutputSignal.at(j)
                 * std::sin(kAngFreq * j * kSamplingPeriod);
-            quadratureIntegrand1.at(j - kStartSampleIndex) =
-                kOutputSignal.at(j) * std::cos(kAngFreq * j * kSamplingPeriod);
+            quadratureIntegrand1.at(j - startSampleIndex) = kOutputSignal.at(j)
+                * std::cos(kAngFreq * j * kSamplingPeriod);
         }
 
         // Calculate b1 and a1
-        const double kInPhaseCoeff1 {2 / ((kCyclesPerFreq
-            - kCyclesToIgnorePerFreq) * kSamplingPeriod) * trapezoidalRule(
+        const double kInPhaseCoeff1 {kAngFreq / gkPi * trapezoidalRule(
             inPhaseIntegrand1, kSamplingPeriod)};
-        const double kQuadratureCoeff1 {2 / ((kCyclesPerFreq
-            - kCyclesToIgnorePerFreq) * kSamplingPeriod) * trapezoidalRule(
+        const double kQuadratureCoeff1 {kAngFreq / gkPi * trapezoidalRule(
             quadratureIntegrand1, kSamplingPeriod)};
 
-        // Calculate the magnitude and phase
+        // Calculate the frequency response: magnitude and phase
         freqResponse.magnitude.at(i) = 20 * std::log10(std::sqrt(kInPhaseCoeff1
             * kInPhaseCoeff1 + kQuadratureCoeff1 * kQuadratureCoeff1)
             / kAmplitude);
         freqResponse.phase.at(i) = kRadToDeg * std::atan2(kQuadratureCoeff1,
             kInPhaseCoeff1);
+
+        // Advance startSampleIndex to prepare for the next iteration
+        samplesThusFar += kSamplesPerFreq.at(i);
+        startSampleIndex = samplesThusFar;
     }
 
     return freqResponse;
