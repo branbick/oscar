@@ -76,8 +76,7 @@ std::vector<double> generateInputSignal(
     {
         rangeVal = kAmplitude * std::sin(kAngFreqs.at(freqIndex) * time);
         time += kSamplingPeriod;
-        numSamples++;
-        if (numSamples == kSamplesPerFreq.at(freqIndex))
+        if (numSamples++ == kSamplesPerFreq.at(freqIndex))
         {
             freqIndex++;
             time = 0.0;
@@ -115,16 +114,15 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
         // Calculate the number of samples to ignore, which correspond to the
         // transient response of kOutputSignal
         const int kSamplesToIgnore {static_cast<int>(std::round(kConst2
-            / kAngFreq)) + 1};
+            / kAngFreq))};
         // TODO: Ensure that kSamplesToIgnore < kSamplesPerFreq.at(i) before
         // proceeding
 
         // Calculate the integrands of the first in-phase and quadrature
-        // Fourier- series coefficients--i.e., b1 and a1, respectively
-        startSampleIndex += kSamplesToIgnore;
+        // Fourier-series coefficients--i.e., b1 and a1, respectively
         std::vector<double> inPhaseIntegrand1(kSamplesForOneCycle);
         std::vector<double> quadratureIntegrand1(kSamplesForOneCycle);
-        for (int j {startSampleIndex}; j < startSampleIndex
+        for (int j {startSampleIndex += kSamplesToIgnore}; j < startSampleIndex
             + kSamplesForOneCycle; j++)
         {
             // j * kSamplingPeriod == time (s)
@@ -148,8 +146,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
             kInPhaseCoeff1);
 
         // Advance startSampleIndex to prepare for the next iteration
-        samplesThusFar += kSamplesPerFreq.at(i);
-        startSampleIndex = samplesThusFar;
+        startSampleIndex = (samplesThusFar += kSamplesPerFreq.at(i));
     }
 
     return freqResponse;

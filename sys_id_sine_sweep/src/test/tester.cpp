@@ -13,12 +13,12 @@ int main()
     // Inputs
     constexpr double kMinFreq {10.0};  // (rad/s)
     constexpr double kMmaxFreq {100.0};  // (rad/s)
-    constexpr int kNumFreqs {5};
+    constexpr int kNumFreqs {3};
 
     constexpr int kCyclesPerFreq {5};
-    constexpr double kSamplingFreq {50.0};  // Must be >= kMmaxFreq / pi (Hz)
+    constexpr double kSamplingFreq {100.0};  // Must be >= kMmaxFreq / pi (Hz)
 
-    constexpr double kAmplitude {0.5};
+    constexpr double kAmplitude {1.0};
 
     constexpr int kCyclesToIgnorePerFreq {2};  // Must be < kCyclesPerFreq
 
@@ -67,7 +67,7 @@ int main()
     //
     // MATLAB code:
     // input = csvread('input.csv');
-    // fs = 50;  % (Hz)
+    // fs = 100;  % (Hz)
     // t = [0 : length(input) - 1] / fs;  % (s)
     // wn = 100;  % (rad/s)
     // zeta = 0.5;
