@@ -155,6 +155,9 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
 double trapezoidalRule(const std::vector<double>& kVals,
                        const double kStepSize)
 {
+    // TODO: Check for invalid parameters based on the following requirements:
+    // 1. kVals.size() > 1
+    // 2. kStepSize > 0.0
     double integral {kStepSize / 2 * kVals.front()};
     const int kNumValsMinus1 {static_cast<int>(kVals.size()) - 1};
     for (int i {1}; i < kNumValsMinus1; i++)

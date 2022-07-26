@@ -90,9 +90,46 @@ std::vector<double> generateInputSignal(
     double kSamplingPeriod);
 
 // TODO: Add complete function description
-// kAmplitude, kAngFreqs, kSamplesPerFreq, and kSamplingPeriod need to be same
-// as those above. kCyclesToIgnorePerFreq corresponds to transient response
-// that needs to be ignored to properly calculate frequency response.
+// BRIEF
+// calcMagAndPhase calculates the frequency response (magnitude and phase; see
+// FreqResponse) of the stable, LTI, SISO system being "identified"--the one
+// that output kOutputSignal in response to an input signal of amplitude
+// kAmplitude, sequentially composed of kAngFreqs.size() different frequencies.
+// Both the input and output signals had the same number of samples,
+// kSamplesPerFreq, collected for each element of kAngFreqs; and both of those
+// signals were sampled every kSamplingPeriod seconds. Also, for each element
+// of kAngFreqs, the frequency response is calculated over only one cycle of
+// kOutputSignal after ignoring kCyclesToIgnorePerFreq cycles, as the transient
+// response of the system must be discarded to properly calculate its frequency
+// response.
+//
+// PARAMETER(S)
+// kOutputSignal
+//     The sinusoidal signal sequentially composed of kAngFreqs.size()
+//     different frequencies, output by the stable, LTI, SISO system being
+//     "identified" [same unit(s) as that/those of kAmplitude]
+// kAmplitude
+//     The amplitude of the input signal [arbitrary unit(s)]
+// kAngFreqs
+//     The vector of angular frequencies both the input and output signals are
+//     sequentially composed of (rad/s)
+// kSamplesPerFreq
+//     The number of samples collected--for both the input and output signals--
+//     for each of the kAngFreqs.size() different frequencies that compose
+//     kAngFreqs
+// kSamplingPeriod
+//     The sampling period for both the input and output signals, dependent on
+//     the embedded system (s)
+// kCyclesToIgnorePerFreq
+//     The number of cycles of kOutputSignal to ignore for each of the
+//     kAngFreqs.size() different frequencies that compose kAngFreqs before
+//     calculating the frequency response; must be greater than or equal to the
+//     number of cycles it takes the transient response to die out; constant
+//     across kAngFreqs
+//
+// RETURN VALUE
+// The frequency response--i.e., magnitude (dB) and phase (deg)--of the stable,
+// LTI, SISO system being "identified"
 FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
                              double kAmplitude,
                              const std::vector<double>& kAngFreqs,
