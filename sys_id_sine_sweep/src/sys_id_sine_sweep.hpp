@@ -89,7 +89,6 @@ std::vector<double> generateInputSignal(
     const std::vector<int>& kSamplesPerFreq,
     double kSamplingPeriod);
 
-// TODO: Add complete function description
 // BRIEF
 // calcMagAndPhase calculates the frequency response (magnitude and phase; see
 // FreqResponse) of the stable, LTI, SISO system being "identified"--the one
