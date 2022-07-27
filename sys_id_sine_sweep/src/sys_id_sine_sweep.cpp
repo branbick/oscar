@@ -78,7 +78,7 @@ std::vector<double> generateInputSignal(
     {
         rangeVal = kAmplitude * std::sin(kAngFreqs.at(freqIndex) * time);
         time += kSamplingPeriod;
-        if (numSamples++ == kSamplesPerFreq.at(freqIndex))
+        if (++numSamples == kSamplesPerFreq.at(freqIndex))
         {
             freqIndex++;
             time = 0.0;
