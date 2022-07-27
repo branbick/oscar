@@ -12,7 +12,7 @@ kSamplingFreq = 100.0;  % Must be >= kMaxFreq / pi (Hz)
 
 kAmplitude = 1.0;
 
-kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq
+kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq - 1
 
 % MATLAB-specific
 % - Print options: true == ON / "please print"; false == OFF / "don't print"
