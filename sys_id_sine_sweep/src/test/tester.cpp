@@ -20,7 +20,7 @@ int main()
 
     constexpr double kAmplitude {1.0};
 
-    constexpr int kCyclesToIgnorePerFreq {2};  // Must be < kCyclesPerFreq
+    constexpr int kCyclesToIgnorePerFreq {2};  // Must be < kCyclesPerFreq - 1
 
     // Generate and optionally print a logarithmically spaced angular frequency
     // vector

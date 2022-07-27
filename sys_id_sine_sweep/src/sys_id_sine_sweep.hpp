@@ -10,7 +10,7 @@ struct FreqResponse
 // logSpace generates a logarithmically (base-10) spaced vector with kNumVals
 // elements between kMinVal and kMaxVal, inclusive.
 //
-// PARAMETER(S)
+// PARAMETERS
 // kMinVal
 //     The minimum value / first element of the generated vector [arbitrary
 //     unit(s)]
@@ -31,7 +31,7 @@ std::vector<double> logSpace(double kMinVal, double kMaxVal, int kNumVals);
 // <number of frequencies>)--based on the latter vector, kCyclesPerFreq, and
 // kSamplingFreq.
 //
-// PARAMETER(S)
+// PARAMETERS
 // kAngFreqs
 //     The vector of angular frequencies returned by logSpace(
 //     <minimum frequency>, <maximum frequency>, <number of frequencies>)
@@ -64,7 +64,7 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
 // domain (i.e., time) can be easily calculated/generated using
 // kSamplingPeriod.
 //
-// PARAMETER(S)
+// PARAMETERS
 // kAmplitude
 //     The amplitude of the sinusoid [arbitrary unit(s)]
 // kAngFreqs
@@ -102,7 +102,7 @@ std::vector<double> generateInputSignal(
 // response of the system must be discarded to properly calculate its frequency
 // response.
 //
-// PARAMETER(S)
+// PARAMETERS
 // kOutputSignal
 //     The sinusoidal signal sequentially composed of kAngFreqs.size()
 //     different frequencies, output by the stable, LTI, SISO system being
@@ -122,13 +122,14 @@ std::vector<double> generateInputSignal(
 // kCyclesToIgnorePerFreq
 //     The number of cycles of kOutputSignal to ignore for each of the
 //     kAngFreqs.size() different frequencies that compose kAngFreqs before
-//     calculating the frequency response; must be greater than or equal to the
-//     number of cycles it takes the transient response to die out; constant
-//     across kAngFreqs
+//     calculating the frequency response; must be 1) less than the number of
+//     cycles both the input and output signals complete for each element of
+//     kAngFreqs minus one and 2) greater than or equal to the number of cycles
+//     it takes the transient response to die out; constant across kAngFreqs
 //
 // RETURN VALUE
-// The frequency response--i.e., magnitude (dB) and phase (deg)--of the stable,
-// LTI, SISO system being "identified"
+// The frequency response--i.e., magnitude (dB) and phase (deg)--of the now
+// "identified" stable, LTI, SISO system
 FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
                              double kAmplitude,
                              const std::vector<double>& kAngFreqs,
@@ -141,7 +142,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
 // that are uniformly spaced kStepSize unit(s) apart, using the composite
 // trapezoidal rule.
 //
-// PARAMETER(S)
+// PARAMETERS
 // kVals
 //     The values to integrate
 // kStepSize
