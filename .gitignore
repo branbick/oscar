@@ -1,6 +1,6 @@
 .vscode/settings.json
+**/*.asv
 **/*.csv
 **/*.dat
 **/*.exe
 **/*.out
-sys_id_sine_sweep/src/test/matlab_mock_up/*.asv
