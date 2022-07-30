@@ -12,14 +12,14 @@ kSamplingFreq = 100.0;  % Must be >= kMaxFreq / pi (Hz)
 
 kAmplitude = 1.0;
 
-kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq - 1
+kCyclesToIgnorePerFreq = 2;  % Must be < kCyclesPerFreq
 
 % MATLAB-specific
 % - Print options: true == ON / "please print"; false == OFF / "don't print"
 PRINT_TEST1 = false;
 PRINT_TEST2 = false;
 PRINT_TEST3 = false;
-PRINT_TEST4 = true;
+PRINT_TEST4 = false;
 
 % - Parameters for system being "identified"
 naturalFreq = 100;  % (rad/s)
@@ -62,8 +62,8 @@ if PRINT_TEST3
    fclose(inputSignalData);
 end
 
-%% Calculate and optionally print the corresponding frequency response: magnitude and phase
-% MATLAB-specific code
+%% Calculate and optionally print the corresponding frequency response (magnitude and phase)
+% MATLAB-specific
 % - lsim
 time = (0 : length(kInputSignal) - 1) * kSamplingPeriod;  % (s)
 s = tf('s');
@@ -90,7 +90,7 @@ legend('nominal', 'kAngFreqs', 'Location', 'best')
 xlim([kMinFreq kMaxFreq])
 grid on, grid minor
 
-% C++ code
+% C++
 kFreqResponse = calcMagAndPhase(outputSignal, kAmplitude, kAngFreqs, ...
    kSamplesPerFreq, kSamplingPeriod, kCyclesToIgnorePerFreq);
 
