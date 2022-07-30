@@ -20,7 +20,7 @@ int main()
 
     constexpr double kAmplitude {1.0};
 
-    constexpr int kCyclesToIgnorePerFreq {2};  // Must be < kCyclesPerFreq - 1
+    constexpr int kCyclesToIgnorePerFreq {2};  // Must be < kCyclesPerFreq
 
     // Generate and optionally print a logarithmically spaced angular frequency
     // vector
@@ -62,8 +62,8 @@ int main()
     inputSignalData.close();
 #endif
 
-    // Calculate and optionally print the corresponding frequency response:
-    // magnitude and phase
+    // Calculate and optionally print the corresponding frequency response
+    // (magnitude and phase)
     //
     // MATLAB code:
     // input = csvread('input.csv');

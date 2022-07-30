@@ -37,7 +37,7 @@ std::vector<int> calcSamplesPerFreq(const std::vector<double>& kAngFreqs,
     // TODO: Check for invalid parameters based on the following requirements:
     // 1. kSamplingFreq >= 2 * kAngFreqs.back() (Nyquist-Shannon sampling
     //    theorem)
-    // 2. kCyclesPerFreq > 2
+    // 2. kCyclesPerFreq > 1
 
     // In words, the number of samples for kAngFreqs.at(i) equals the floor of
     // the following quantity, plus one: the period corresponding to
