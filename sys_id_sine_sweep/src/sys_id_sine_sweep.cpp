@@ -115,8 +115,18 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
             / kAngFreq)) + 1};
         const int kSamplesToIgnore {static_cast<int>(std::round(kConst2
             / kAngFreq))};
-        // TODO: Ensure kSamplesToIgnore < kSamplesPerFreq.at(i) before
-        // proceeding
+        // TODO: Before proceeding, ensure ...
+        // 1. kSamplesToIgnore < kSamplesPerFreq.at(i) (to prevent the entire
+        //    portion of kOutputSignal corresponding to kAngFreq from being
+        //    ignored)
+        // 2. samplesThusFar + kSamplesToIgnore + kSamplesForOneCycle - 1 <
+        //    kOutputSignal.size() [to prevent kOutputSignal.at(...) from
+        //    reporting an out-of-range error in the for loop below*]
+        //
+        // * This situation could be avoided by flooring instead of rounding in
+        // the calculations of both kSamplesForOneCycle and kSamplesToIgnore
+        // above, but doing that would decrease the accuracy of the calculated
+        // frequency response.
 
         // Calculate the integrands of the first in-phase and quadrature
         // Fourier-series coefficients--i.e., b1 and a1, respectively
