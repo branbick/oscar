@@ -15,7 +15,17 @@ function freqResponse = calcMagAndPhase(kOutputSignal, kAmplitude, ...
       kAngFreq = kAngFreqs(i);  % (rad/s)
       kSamplesForOneCycle = round(kConst1 / kAngFreq) + 1;
       kSamplesToIgnore = round(kConst2 / kAngFreq);
-      % TODO: Ensure kSamplesToIgnore < kSamplesPerFreq(i) before proceeding
+      % TODO: Before proceeding, ensure ...
+      % 1. kSamplesToIgnore < kSamplesPerFreq(i) (to prevent the entire portion
+      %    of kOutputSignal corresponding to kAngFreq from being ignored)
+      % 2. sum(kSamplesPerFreq(1 : i - 1)) + kSamplesToIgnore
+      %    + kSamplesForOneCycle - 1 < length(kOutputSignal) [to prevent
+      %    kOutputSignal(...) from reporting an out-of-range error in the for
+      %    loop below*]
+      %
+      % * This situation could be avoided by flooring instead of rounding in
+      % the calculations of both kSamplesForOneCycle and kSamplesToIgnore
+      % above, but doing that would decrease the accuracy of freqResponse.
 
       % Calculate the integrands of the first in-phase and quadrature Fourier-
       % series coefficients--i.e., b1 and a1, respectively
