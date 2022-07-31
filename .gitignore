@@ -1,3 +1,6 @@
+.vscode/settings.json
+**/*.asv
+**/*.csv
+**/*.dat
 **/*.exe
 **/*.out
-.vscode
