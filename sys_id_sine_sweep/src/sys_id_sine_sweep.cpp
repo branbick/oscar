@@ -125,8 +125,7 @@ FreqResponse calcMagAndPhase(const std::vector<double>& kOutputSignal,
         //
         // * This situation could be avoided by flooring instead of rounding in
         // the calculations of both kSamplesForOneCycle and kSamplesToIgnore
-        // above, but doing that would decrease the accuracy of the calculated
-        // frequency response.
+        // above, but doing that would decrease the accuracy of freqResponse.
 
         // Calculate the integrands of the first in-phase and quadrature
         // Fourier-series coefficients--i.e., b1 and a1, respectively
