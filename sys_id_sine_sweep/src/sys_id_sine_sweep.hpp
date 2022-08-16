@@ -1,3 +1,6 @@
+// Refer to the following white paper, located at ../doc: "How to perform
+// system identification using the sine-sweep method" (sys_id_sine_sweep.pdf)
+
 #include <vector>
 
 struct FreqResponse
